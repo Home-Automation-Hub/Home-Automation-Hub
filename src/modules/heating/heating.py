@@ -6,7 +6,12 @@ temperature = -1;
 
 
 def module_http():
-    return "Hello from module" + str(temperature)
+    response = ""
+    response += web.get_request_method() + "<br>"
+    response += str(web.get_request_form()) + "<br>"
+    response += str(web.get_request_args()) + "<br>"
+
+    return response
 
 
 def control_heating(topic, message):
@@ -23,4 +28,4 @@ def control_heating(topic, message):
 
 def register():
     mqtt.subscribe("flat/heating/hallway/temperature", control_heating)
-    web.add_endpoint("foo", module_http)
+    web.add_endpoint("foo", module_http, ["GET", "POST"])
