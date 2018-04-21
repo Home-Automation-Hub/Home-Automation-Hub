@@ -1,1 +1,1 @@
-from .heating import say_hello
+from .heating import register

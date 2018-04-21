@@ -29,6 +29,9 @@ def subscribe(topic, callback):
     _topic_callbacks[topic].append(callback)
     _instance.subscribe(topic)
 
+def publish(topic, message):
+    _instance.publish(topic, message)
+
 def set_up(host, port, subscribe_to_topics_func):
     global _instance, _subscribe_to_topics_func
     _subscribe_to_topics_func = subscribe_to_topics_func

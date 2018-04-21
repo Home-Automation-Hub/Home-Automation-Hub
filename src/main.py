@@ -1,14 +1,13 @@
-from modules.heating import say_hello
 import mqtt
 import time
+import config
 
 def main():
     def subscibe_to_topics():
-        mqtt.subscribe("flat/heating/hallway/temperature", lambda t, m: print(f"Temperature: {m}"))
-        mqtt.subscribe("flat/heating/hallway/humidity", lambda t, m: print(f"Humidity: {m}"))
-        mqtt.subscribe("flat/heating/hallway/+", lambda t, m: print(f"Reading: {t} - {m}"))
+        for module in config.enabled_modules:
+            module.register()
 
-    mqtt.set_up("10.114.1.101", 1883, subscibe_to_topics)
+    mqtt.set_up(config.mqtt_broker.get("host"), config.mqtt_broker.get("port"), subscibe_to_topics)
 
     while True:
         time.sleep(1)
