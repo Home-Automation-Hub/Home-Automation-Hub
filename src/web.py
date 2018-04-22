@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 
 _app = Flask(__name__)
 endpoint_register_path_prefix = ""
@@ -6,7 +6,7 @@ endpoint_register_path_prefix = ""
 
 @_app.route("/")
 def index():
-    return "Hello world!"
+    return render_template("dashboard.html")
 
 
 def add_endpoint(path, view_func, methods=None):
