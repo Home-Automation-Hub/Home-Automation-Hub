@@ -25,10 +25,6 @@ def control_heating(topic, message):
     else:
         mqtt.publish("flat/heating/hallway/chState", "off")
 
-    import time
-    print("Sleeping")
-    time.sleep(15)
-
 
 def register():
     mqtt.subscribe("flat/heating/hallway/temperature", control_heating)

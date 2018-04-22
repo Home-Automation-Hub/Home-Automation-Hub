@@ -1,4 +1,5 @@
 from paho.mqtt.client import Client, topic_matches_sub
+import threading
 
 _instance = None
 _subscribe_to_topics_func = None
@@ -19,7 +20,7 @@ def _on_message(client, userdata, message):
             callbacks_to_run += _topic_callbacks[sub]
 
     for callback in callbacks_to_run:
-        callback(message.topic, message.payload)
+        threading.Thread(target=callback, args=(message.topic, message.payload)).start()
 
 
 
