@@ -3,6 +3,8 @@ from modules import heating
 
 config = ConfigStore()
 
-config.register_module(heating, "heating", "Central Heating")
+config.register_module(heating, "heating", "Central Heating", "heating")
 
-config.set_mqtt_broker("10.114.1.101", 1883)
+config.set_mqtt_broker("localhost", 1883)
+
+config.set_redis_config("localhost", 6379, 0)

@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+import storage
 
 _app = Flask(__name__)
 endpoint_register_path_prefix = ""
@@ -6,7 +7,8 @@ endpoint_register_path_prefix = ""
 
 @_app.route("/")
 def index():
-    return render_template("dashboard.html")
+    message = storage.instance.get("test")
+    return render_template("dashboard.html", message=message)
 
 
 def add_endpoint(path, view_func, methods=None):
