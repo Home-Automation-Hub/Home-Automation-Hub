@@ -14,7 +14,7 @@ class ConfigStore():
 
     def register_module(self, module, url_prefix, title, storage_prefix):
         print("Registering module: " + str(module.__name__))
-        self.enabled_modules[uuid.uuid4()] = {
+        self.enabled_modules[str(uuid.uuid4())] = {
             "module": module,
             "url_prefix": url_prefix,
             "title": title,

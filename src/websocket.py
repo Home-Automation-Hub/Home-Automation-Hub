@@ -23,7 +23,7 @@ async def socket_handler(websocket, path):
             message = await channel.get()
 
             await websocket.send(message.decode("UTF-8"))
-    except websocket.exceptions.ConnectionClosed:
+    except websockets.exceptions.ConnectionClosed:
         await redis.execute_pubsub("unsubscribe", channel)
         redis.close()
 
@@ -52,4 +52,7 @@ class ModuleWebsocket():
         self.module_id = module_id
 
     def publish(self, data):
-        storage.redis_instance.publish("websocket", data)
+        storage.redis_instance.publish("websocket", {
+            "module_id": self.module_id,
+            "data": data
+        })
