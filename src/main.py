@@ -2,11 +2,13 @@ import mqtt
 from config import config
 import web
 import storage
+import websocket
 
 
 def main():
     storage.set_up(config.redis_config.get("host"), config.redis_config.get("port"), config.redis_config.get("db"))
     mqtt.set_up(config.mqtt_broker.get("host"), config.mqtt_broker.get("port"), register_modules)
+    websocket.start_server(config)
     web.run()
 
 

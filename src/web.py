@@ -7,8 +7,7 @@ endpoint_register_path_prefix = ""
 
 @_app.route("/")
 def index():
-    message = storage.instance.get("test")
-    return render_template("dashboard.html", message=message)
+    return render_template("dashboard.html")
 
 
 def add_endpoint(path, view_func, methods=None):
