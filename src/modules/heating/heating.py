@@ -22,7 +22,9 @@ def control_heating(topic, message):
     temperature = float(message)
     print(f"Temperature: {temperature}")
 
-    ws.publish(str(temperature))
+    ws.publish("temperature", {
+        "latest_reading": temperature
+    })
 
     if math.isnan(temperature):
         return

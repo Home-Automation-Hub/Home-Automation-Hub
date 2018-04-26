@@ -3,6 +3,7 @@ import asyncio
 import threading
 import aioredis
 import storage
+import uuid
 
 redis_connection_host = None
 redis_connection_db = None
@@ -11,9 +12,14 @@ redis_connection_db = None
 async def socket_handler(websocket, path):
     auth_key = await websocket.recv()
 
-    # TODO: validate auth key here!
+    redis_key = f"ws:auth:{auth_key}"
+    auth_key_valid = storage.redis_instance.get(redis_key)
+    storage.redis_instance.delete(redis_key)
+    if not auth_key_valid:
+        await websocket.send("invalid_auth")
+        return
 
-    await websocket.send("AUTHENTICATED!")
+    await websocket.send("ok")
 
     redis = await aioredis.create_connection(address=redis_connection_host, db=redis_connection_db)
     channel = aioredis.Channel("websocket", is_pattern=False)
@@ -47,12 +53,19 @@ def start_server(config):
     pubsub.subscribe(**{'websocket': send_socket_message})
 
 
+def generate_auth_token():
+    token = str(uuid.uuid4()).replace("-", "")
+    storage.redis_instance.setex(f"ws:auth:{token}", 30, "valid")
+    return token
+
+
 class ModuleWebsocket():
     def __init__(self, module_id):
         self.module_id = module_id
 
-    def publish(self, data):
+    def publish(self, key, data):
         storage.redis_instance.publish("websocket", {
             "module_id": self.module_id,
+            "key": key,
             "data": data
         })

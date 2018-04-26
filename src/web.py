@@ -1,8 +1,14 @@
 from flask import Flask, request, render_template
-import storage
+import websocket
 
 _app = Flask(__name__)
 endpoint_register_path_prefix = ""
+
+
+@_app.context_processor
+def inject_websocket_auth():
+    token = websocket.generate_auth_token()
+    return dict(ws_auth=token)
 
 
 @_app.route("/")
