@@ -32,4 +32,6 @@ def register(module_id):
     web.add_endpoint("foo", module_http, ["GET", "POST"])
 
     storage = Storage(module_id)
-    print(storage.key_prefix)
+    print(storage.get("test"))
+    print(storage.set("test", "testing"))
+    print(storage.get("test"))
