@@ -7,6 +7,7 @@ from flask import render_template
 
 temperature = -1;
 ws = None
+module_id = None
 
 def module_http():
     response = ""
@@ -15,9 +16,9 @@ def module_http():
     response += str(web.get_request_args()) + "<br>"
     response += str(temperature)
 
-    return render_template("dashboard.html")
+    web.render_template(module_id, "foo", "bar")
 
-    return response
+    return render_template("dashboard.html")
 
 
 def control_heating(topic, message):
@@ -37,8 +38,10 @@ def control_heating(topic, message):
         mqtt.publish("flat/heating/hallway/chState", "off")
 
 
-def register(module_id):
-    global ws
+def register(module_id_):
+    global ws, module_id
+    module_id = module_id_
+
     mqtt.subscribe("flat/heating/hallway/temperature", control_heating)
     web.add_endpoint(module_id, "foo", module_http, ["GET", "POST"])
 
