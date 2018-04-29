@@ -1,7 +1,13 @@
+
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="module-id" content="{{ module_id }}" />
     <meta name="ws-auth-token" content="{{ ws_auth }}" />
+    <meta name="ws-endpoint" content="ws://127.0.0.1:5001" />
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>window.app = {};</script>
+    <script src="{{ url_for('static', filename='js/websockets.js') }}"></script>
 </head>
 <body>
     {% block content %}{% endblock %}

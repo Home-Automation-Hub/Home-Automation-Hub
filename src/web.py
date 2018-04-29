@@ -2,7 +2,8 @@ from flask import Flask, request, render_template
 import websocket
 
 _app = Flask(__name__)
-endpoint_register_path_prefix = ""
+endpoint_register_path_prefix = ""  # TODO: Use module_id passed to add_endpoint to avoid this?
+path_module_ids = {}
 
 
 @_app.context_processor
@@ -10,17 +11,25 @@ def inject_websocket_auth():
     token = websocket.generate_auth_token()
     return dict(ws_auth=token)
 
+@_app.context_processor
+def inject_module_id():
+    module_id = path_module_ids.get(request.path)
+    if not module_id:
+        module_id = "application"
+    return dict(module_id=module_id)
+
 
 @_app.route("/")
 def index():
     return render_template("dashboard.html")
 
 
-def add_endpoint(path, view_func, methods=None):
+def add_endpoint(module_id, path, view_func, methods=None):
     if not methods:
         methods = ["GET"]
 
     endpoint_path = "/" + "/".join([x.strip("/") for x in ["modules", endpoint_register_path_prefix, path]])
+    path_module_ids[endpoint_path] = module_id
     endpoint = endpoint_path.replace("/", "_").replace(" ", "_")
     _app.add_url_rule(endpoint_path, endpoint, view_func, methods=methods)
 

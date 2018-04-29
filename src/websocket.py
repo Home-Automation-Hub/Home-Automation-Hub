@@ -4,6 +4,7 @@ import threading
 import aioredis
 import storage
 import uuid
+import json
 
 redis_connection_host = None
 redis_connection_db = None
@@ -27,8 +28,8 @@ async def socket_handler(websocket, path):
     try:
         while True:
             message = await channel.get()
-
-            await websocket.send(message.decode("UTF-8"))
+            if message:
+                await websocket.send(message.decode("UTF-8"))
     except websockets.exceptions.ConnectionClosed:
         await redis.execute_pubsub("unsubscribe", channel)
         redis.close()
@@ -64,8 +65,8 @@ class ModuleWebsocket():
         self.module_id = module_id
 
     def publish(self, key, data):
-        storage.redis_instance.publish("websocket", {
+        storage.redis_instance.publish("websocket", json.dumps({
             "module_id": self.module_id,
             "key": key,
             "data": data
-        })
+        }))

@@ -3,6 +3,7 @@ import math
 import web
 from storage import ModuleStorage
 from websocket import ModuleWebsocket
+from flask import render_template
 
 temperature = -1;
 ws = None
@@ -13,6 +14,8 @@ def module_http():
     response += str(web.get_request_form()) + "<br>"
     response += str(web.get_request_args()) + "<br>"
     response += str(temperature)
+
+    return render_template("dashboard.html")
 
     return response
 
@@ -37,7 +40,7 @@ def control_heating(topic, message):
 def register(module_id):
     global ws
     mqtt.subscribe("flat/heating/hallway/temperature", control_heating)
-    web.add_endpoint("foo", module_http, ["GET", "POST"])
+    web.add_endpoint(module_id, "foo", module_http, ["GET", "POST"])
 
     storage = ModuleStorage(module_id)
     print(storage.get("test"))
