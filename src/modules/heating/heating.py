@@ -16,9 +16,9 @@ def module_http():
     response += str(web.get_request_args()) + "<br>"
     response += str(temperature)
 
-    web.render_template(module_id, "foo", "bar")
+    # web.render_template(module_id, "foo", "bar")
 
-    return render_template("dashboard.html")
+    return response
 
 
 def control_heating(topic, message):

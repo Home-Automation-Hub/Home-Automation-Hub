@@ -3,6 +3,7 @@ from flask import Flask, request, render_template
 import config
 import websocket
 import os
+from gevent.wsgi import WSGIServer
 
 _app = Flask(__name__)
 endpoint_register_path_prefix = ""  # TODO: Use module_id passed to add_endpoint to avoid this?
@@ -49,9 +50,10 @@ def get_request_method():
     return request.method
 
 
-def render_template(module_id, filename, data):
-    template_dir = os.path.join(os.path.dirname(config.config.enabled_modules[module_id]["module"].__file__))
+# def render_template(module_id, filename, data):
+#     template_dir = os.path.join(os.path.dirname(config.config.enabled_modules[module_id]["module"].__file__))
 
 
 def run():
-    _app.run()
+    server = WSGIServer(('', 5000), _app)
+    server.serve_forever()
