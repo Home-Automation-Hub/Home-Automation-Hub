@@ -3,11 +3,13 @@ import math
 import web
 from storage import ModuleStorage
 from websocket import ModuleWebsocket
-from flask import render_template
+from flask import render_template, Blueprint
 
-temperature = -1;
+temperature = -1
 ws = None
 module_id = None
+
+# heating_bp = Blueprint("modules-heating", __name__, url_prefix="/modules/heating")
 
 def module_http():
     response = ""
@@ -49,5 +51,4 @@ def register(module_id_):
     print(storage.get("test"))
     print(storage.set("test", "testing"))
     print(storage.get("test"))
-
     ws = ModuleWebsocket(module_id)

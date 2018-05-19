@@ -15,8 +15,8 @@ def main():
 def register_modules():
     for module_id in config.enabled_modules:
         module = config.enabled_modules[module_id]
-        web.endpoint_register_path_prefix = module["url_prefix"]
         module["module"].register(module_id)
+    web.register_all_endpoints()
 
 
 if __name__ == "__main__":

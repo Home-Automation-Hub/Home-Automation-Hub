@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Blueprint
 
 import config
 import websocket
@@ -6,9 +6,8 @@ import os
 from gevent.wsgi import WSGIServer
 
 _app = Flask(__name__)
-endpoint_register_path_prefix = ""  # TODO: Use module_id passed to add_endpoint to avoid this?
 path_module_ids = {}
-
+endpoints_to_register = []
 
 @_app.context_processor
 def inject_websocket_auth():
@@ -28,14 +27,53 @@ def index():
     return render_template("dashboard.html")
 
 
+# TODO: Store the endpoints that should be registered somewhere then create
+# blueprints and register them in all in one go once all modules have had their
+# register() function called.
 def add_endpoint(module_id, path, view_func, methods=None):
     if not methods:
         methods = ["GET"]
 
-    endpoint_path = "/" + "/".join([x.strip("/") for x in ["modules", endpoint_register_path_prefix, path]])
-    path_module_ids[endpoint_path] = module_id
-    endpoint = endpoint_path.replace("/", "_").replace(" ", "_")
-    _app.add_url_rule(endpoint_path, endpoint, view_func, methods=methods)
+    endpoints_to_register.append({
+        "module_id": module_id,
+        "path": path,
+        "view_func": view_func,
+        "methods": methods
+    })
+
+
+def register_all_endpoints():
+    for endpoint in endpoints_to_register:
+        blueprint = _app.blueprints.get(endpoint["module_id"])
+        module_attributes = config.config.enabled_modules[endpoint[
+                "module_id"]]
+
+        if not blueprint:
+            blueprint = Blueprint(endpoint["module_id"],
+                    module_attributes["module"].__name__)
+        
+        # The path to an endpoint is the word modules followed by the
+        # endpoint's path prefix folloed by the path specified in the
+        # call to add_endpoint()
+        endpoint_path = "/" + "/".join([x.strip("/") for x in ["modules",
+                module_attributes["url_prefix"], endpoint["path"]]])
+
+        path_module_ids[endpoint_path] = endpoint["module_id"]
+
+        # This is a string that is required by flask to identify the
+        # endpoint, we will just use the path with slashes and spaces
+        # replaced by underscores
+        endpoint_identifier = endpoint_path.replace("/", "_").replace(" ", "_")
+
+        blueprint.add_url_rule(endpoint_path, endpoint_identifier,
+                endpoint["view_func"], methods=endpoint["methods"])
+
+        _app.register_blueprint(blueprint)
+
+
+def register_blueprint(blueprint):
+    _app.register_blueprint(blueprint)
+    print(_app.blueprints)
 
 
 def get_request_args():
