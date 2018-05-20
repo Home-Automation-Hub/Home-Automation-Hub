@@ -2,3 +2,6 @@ venv
 .idea
 *.pyc
 .vscode
+src/yarn.lock
+src/node_modules
+src/static
