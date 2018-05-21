@@ -19,10 +19,12 @@
         <nav class="sidebar-nav">
             <ul class="nav">
                 <li class="nav-title">Modules</li>
-                <a href="/modules/heating/foo" class="nav-link">
-                    <i class="nav-icon fa fa-thermometer-three-quarters"></i>
-                    Heating
-                </a>
+                {% for module in enabled_modules %}
+                    <a href="/modules/{{ module.url_prefix }}" class="nav-link">
+                        <i class="nav-icon fa fa-{{ module.fontawesome_icon_class }}"></i>
+                        {{ module.title }}
+                    </a>
+                {% endfor %}
             </ul>
         </nav>
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>

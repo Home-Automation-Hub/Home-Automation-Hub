@@ -12,13 +12,15 @@ class ConfigStore():
             "port": port
         }
 
-    def register_module(self, module, url_prefix, title, storage_prefix):
+    def register_module(self, module, url_prefix, title, storage_prefix, 
+            fontawesome_icon_class="plug"):
         print("Registering module: " + str(module.__name__))
         self.enabled_modules[str(uuid.uuid4())] = {
             "module": module,
             "url_prefix": url_prefix,
             "title": title,
-            "storage_prefix": storage_prefix
+            "storage_prefix": storage_prefix,
+            "fontawesome_icon_class": fontawesome_icon_class
         }
 
     def set_redis_config(self, host, port, db):

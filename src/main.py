@@ -16,6 +16,11 @@ def register_modules():
     for module_id in config.enabled_modules:
         module = config.enabled_modules[module_id]
         module["module"].register(module_id)
+        web.enabled_modules.append({
+            "title": module["title"],
+            "url_prefix": module["url_prefix"],
+            "fontawesome_icon_class": module["fontawesome_icon_class"]
+        })
     web.register_all_endpoints()
 
 

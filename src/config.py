@@ -3,7 +3,8 @@ from modules import heating
 
 config = ConfigStore()
 
-config.register_module(heating, "heating", "Central Heating", "heating")
+config.register_module(heating, "heating", "Central Heating", "heating",
+        fontawesome_icon_class="thermometer-half")
 
 config.set_mqtt_broker("localhost", 1883)
 

@@ -22,6 +22,9 @@ def module_http():
 
     return response
 
+def module_http_bar():
+    return "<h1>BAR</h1>"
+
 
 def control_heating(topic, message):
     global temperature
@@ -45,7 +48,8 @@ def register(module_id_):
     module_id = module_id_
 
     mqtt.subscribe("flat/heating/hallway/temperature", control_heating)
-    web.add_endpoint(module_id, "foo", module_http, ["GET", "POST"])
+    web.add_endpoint(module_id, "/", module_http, ["GET", "POST"])
+    web.add_endpoint(module_id, "/bar/", module_http_bar, ["GET", "POST"])
 
     storage = ModuleStorage(module_id)
     print(storage.get("test"))
