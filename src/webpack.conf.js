@@ -32,6 +32,13 @@ module.exports = {
           ],
           fallback: 'style-loader'
         })
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)(\?.*$|$)/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]'
+        }
       }
     ]
   }

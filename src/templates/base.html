@@ -5,12 +5,30 @@
     <meta name="module-id" content="{{ module_id }}" />
     <meta name="ws-auth-token" content="{{ ws_auth }}" />
     <meta name="ws-endpoint" content="ws://127.0.0.1:5001" />
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script>window.app = {};</script>
     <link rel="stylesheet" href="{{ url_for('static', filename='bundle.css') }}">
-    <script src="{{ url_for('static', filename='bundle.js') }}"></script>
+    <title>Smart Home Hub</title>
 </head>
-<body>
+<body class="app sidebar-md-show sidebar-fixed">
+    <nav class="navbar navbar-light bg-light">
+        <a href="#" class="navbar-brand">Smart Home Hub</a>
+    </nav>
+
+    <div class="sidebar">
+        <nav class="sidebar-nav">
+            <ul class="nav">
+                <li class="nav-title">Modules</li>
+                <a href="/modules/heating/foo" class="nav-link">
+                    <i class="nav-icon fa fa-thermometer-three-quarters"></i>
+                    Heating
+                </a>
+            </ul>
+        </nav>
+        <button class="sidebar-minimizer brand-minimizer" type="button"></button>
+    </div>
+
     {% block content %}{% endblock %}
+    <script src="{{ url_for('static', filename='bundle.js') }}"></script>
 </body>
 </html>

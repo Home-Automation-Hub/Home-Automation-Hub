@@ -1,1 +1,4 @@
-@import "~bootstrap/scss/bootstrap";
+@import "~@coreui/coreui/scss/coreui";
+@import '~font-awesome/scss/_variables.scss';
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
