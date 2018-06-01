@@ -22,11 +22,14 @@ def inject_module_id():
         module_id = "application"
     return dict(module_id=module_id)
 
+@_app.context_processor
+def inject_enabled_modules():
+    return dict(enabled_modules=enabled_modules)
+
 
 @_app.route("/")
 def index():
-    return render_template("dashboard.html",
-            enabled_modules=enabled_modules)
+    return render_template("dashboard.html")
 
 
 # TODO: Store the endpoints that should be registered somewhere then create
@@ -61,7 +64,8 @@ def register_all_endpoints():
 
         if not blueprint:
             blueprint = Blueprint(endpoint["module_id"],
-                    module_attributes["module"].__name__)
+                    module_attributes["module"].__name__,
+                    template_folder="templates")
         
         # The path to an endpoint is the word modules followed by the
         # endpoint's path prefix folloed by the path specified in the
@@ -109,11 +113,6 @@ def get_request_form():
 
 def get_request_method():
     return request.method
-
-
-# def render_template(module_id, filename, data):
-#     template_dir = os.path.join(os.path.dirname(config.config.enabled_modules[module_id]["module"].__file__))
-
 
 def run():
     server = WSGIServer(('', 5000), _app)

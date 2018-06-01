@@ -1,3 +1,5 @@
+import $ from "jquery"
+
 (function() {
     var endpoint = $("meta[name='ws-endpoint']").attr("content");
     var authToken = $("meta[name='ws-auth-token']").attr("content");

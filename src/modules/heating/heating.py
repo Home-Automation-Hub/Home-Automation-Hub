@@ -8,19 +8,13 @@ from flask import render_template, Blueprint
 temperature = -1
 ws = None
 module_id = None
+ch_is_on = None
 
 # heating_bp = Blueprint("modules-heating", __name__, url_prefix="/modules/heating")
 
 def module_http():
-    response = ""
-    response += web.get_request_method() + "<br>"
-    response += str(web.get_request_form()) + "<br>"
-    response += str(web.get_request_args()) + "<br>"
-    response += str(temperature)
-
-    # web.render_template(module_id, "foo", "bar")
-
-    return response
+    return render_template("heating/index.html",
+        ch_status = "On" if ch_is_on else "Off", temperature = temperature)
 
 def module_http_bar():
     return "<h1>BAR</h1>"
@@ -39,8 +33,10 @@ def control_heating(topic, message):
         return
     if temperature < 20:
         mqtt.publish("flat/heating/hallway/chState", "on")
+        ch_is_on = True
     else:
         mqtt.publish("flat/heating/hallway/chState", "off")
+        ch_is_on = False
 
 
 def register(module_id_):

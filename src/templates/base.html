@@ -14,23 +14,31 @@
     <nav class="navbar navbar-light bg-light">
         <a href="#" class="navbar-brand">Smart Home Hub</a>
     </nav>
-
-    <div class="sidebar">
-        <nav class="sidebar-nav">
-            <ul class="nav">
-                <li class="nav-title">Modules</li>
-                {% for module in enabled_modules %}
-                    <a href="/modules/{{ module.url_prefix }}" class="nav-link">
-                        <i class="nav-icon fa fa-{{ module.fontawesome_icon_class }}"></i>
-                        {{ module.title }}
+    <div class="app-body">
+        <div class="sidebar">
+            <nav class="sidebar-nav">
+                <ul class="nav">
+                    <a href="/", class="nav-link">
+                        <i class="nav-icon fas fa-tachometer-alt"></i>
+                        Dashboard
                     </a>
-                {% endfor %}
-            </ul>
-        </nav>
-        <button class="sidebar-minimizer brand-minimizer" type="button"></button>
+                    <li class="nav-title">Modules</li>
+                    {% for module in enabled_modules %}
+                        <a href="/modules/{{ module.url_prefix }}/" class="nav-link">
+                            <i class="nav-icon fas fa-{{ module.fontawesome_icon_class }}"></i>
+                            {{ module.title }}
+                        </a>
+                    {% endfor %}
+                </ul>
+            </nav>
+            <button class="sidebar-minimizer brand-minimizer" type="button"></button>
+        </div>
+        <main class="main">
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
     </div>
-
-    {% block content %}{% endblock %}
     <script src="{{ url_for('static', filename='bundle.js') }}"></script>
 </body>
 </html>
