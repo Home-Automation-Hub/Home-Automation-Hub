@@ -4,7 +4,7 @@
 <div class="card">
     <div class="card-body">
         <h1>Central Heating Statistics</h1>
-
+        
         <table class="table">
             <thead class="thead-dark">
                 <tr>
@@ -14,11 +14,19 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ temperature }}&deg;c</td>
+                    <td><span id="val-temperature">{{ temperature }}</span>&deg;c</td>
                     <td>{{ ch_status }}</td>
                 </tr>
             </tbody>
         </table>
-    </div>
+    </div>   
 </div>
+{% endblock %}
+
+{% block module_scripts %}
+<script type="text/javascript">
+    window.app.registerModuleWebsocketEndpoint(function(key, data) {
+        jQuery("#val-temperature").text(data["latest_reading"]);
+    }, "temperature");
+ </script> 
 {% endblock %}

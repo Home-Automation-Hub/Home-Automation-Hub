@@ -40,5 +40,6 @@
         </main>
     </div>
     <script src="{{ url_for('static', filename='bundle.js') }}"></script>
+    {% block module_scripts %}{% endblock %}
 </body>
 </html>

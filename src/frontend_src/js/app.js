@@ -1,3 +1,6 @@
+import $ from "jquery"
+window.jQuery = $ // Make jQuery accessable globally so that modules can use it
+
 import "@coreui/coreui"
 import "./websockets.js"
 import css from "../css/app.scss"

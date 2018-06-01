@@ -22,7 +22,7 @@ import $ from "jquery"
 
 
     function routeSocketMessage(msg) {
-        messageData = JSON.parse(msg.data);
+        var messageData = JSON.parse(msg.data);
         if (typeof moduleEndpoints[messageData["module_id"]] == "undefined") {
             return;
         }
