@@ -4,6 +4,18 @@
 <div class="card">
     <div class="card-body">
         <h1>Central Heating Statistics</h1>
+
+        <div class="float-right">
+            <span class="badge badge-success{% if not ch_is_on %} d-none{% endif %}" id="badge_heating_on">Heating is on</span>
+            <span class="badge badge-danger{% if ch_is_on %} d-none{% endif %}" id="badge_heating_off">Heating is off</span>
+            <button class="btn btn-secondary" id="btn_toggle_heating">
+                {% if ch_is_on %}
+                    Turn Off
+                {% else %}
+                    Turn On
+                {% endif %}
+            </button>
+        </div>
         
         <table class="table">
             <thead class="thead-dark">
@@ -15,7 +27,7 @@
             <tbody>
                 <tr>
                     <td><span id="val-temperature">{{ temperature }}</span>&deg;c</td>
-                    <td>{{ ch_status }}</td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
@@ -28,5 +40,21 @@
     window.app.registerModuleWebsocketEndpoint(function(key, data) {
         jQuery("#val-temperature").text(data["latest_reading"]);
     }, "temperature");
+
+    window.app.registerModuleWebsocketEndpoint(function(key, data) {
+        if (data["ch_is_on"]) {
+            jQuery("#btn_toggle_heating").text("Turn Off");
+            jQuery("#badge_heating_on").removeClass("d-none");
+            jQuery("#badge_heating_off").addClass("d-none");
+        } else {
+            jQuery("#btn_toggle_heating").text("Turn On");
+            jQuery("#badge_heating_on").addClass("d-none");
+            jQuery("#badge_heating_off").removeClass("d-none");
+        }
+    }, "state");
+
+    jQuery("#btn_toggle_heating").click(function() {
+        jQuery.post("http://127.0.0.1:5000/modules/heating/action/toggle_heating");
+    });
  </script> 
 {% endblock %}

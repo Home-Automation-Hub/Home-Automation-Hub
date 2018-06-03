@@ -10,42 +10,63 @@ ws = None
 module_id = None
 ch_is_on = None
 
-# heating_bp = Blueprint("modules-heating", __name__, url_prefix="/modules/heating")
-
 def module_http():
-    return render_template("heating/index.html",
-        ch_status = "On" if ch_is_on else "Off", temperature = temperature)
+    return render_template("heating/index.html", ch_is_on=ch_is_on,
+                           temperature=temperature)
 
 def module_http_bar():
     return "<h1>BAR</h1>"
 
+def toggle_heating():
+    if ch_is_on:
+        heating_off()
+    else:
+        heating_on()
 
-def control_heating(topic, message):
+    return ""
+
+
+def heating_on():
+    global ch_is_on
+
+    mqtt.publish("flat/heating/hallway/chState", "on")
+    ch_is_on = True
+
+    ws_push_state()
+
+
+def heating_off():
+    global ch_is_on
+
+    mqtt.publish("flat/heating/hallway/chState", "off")
+    ch_is_on = False
+
+    ws_push_state()
+
+
+def handle_temperature(topic, message):
     global temperature
     temperature = float(message)
-    print(f"Temperature: {temperature}")
 
     ws.publish("temperature", {
         "latest_reading": temperature
     })
 
-    if math.isnan(temperature):
-        return
-    if temperature < 20:
-        mqtt.publish("flat/heating/hallway/chState", "on")
-        ch_is_on = True
-    else:
-        mqtt.publish("flat/heating/hallway/chState", "off")
-        ch_is_on = False
+
+def ws_push_state():
+    ws.publish("state", {
+        "ch_is_on": ch_is_on
+    })
 
 
 def register(module_id_):
     global ws, module_id
     module_id = module_id_
 
-    mqtt.subscribe("flat/heating/hallway/temperature", control_heating)
+    mqtt.subscribe("flat/heating/hallway/temperature", handle_temperature)
+
     web.add_endpoint(module_id, "/", module_http, ["GET", "POST"])
-    web.add_endpoint(module_id, "/bar/", module_http_bar, ["GET", "POST"])
+    web.add_endpoint(module_id, "/action/toggle_heating/", toggle_heating, ["POST"])
 
     storage = ModuleStorage(module_id)
     print(storage.get("test"))
