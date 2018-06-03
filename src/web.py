@@ -7,6 +7,7 @@ from gevent.wsgi import WSGIServer
 
 _app = Flask(__name__)
 path_module_ids = {}
+module_base_paths = {}
 endpoints_to_register = []
 enabled_modules = []
 
@@ -16,11 +17,13 @@ def inject_websocket_auth():
     return dict(ws_auth=token)
 
 @_app.context_processor
-def inject_module_id():
-    module_id = path_module_ids.get(request.path)
+def inject_module_info():
+    module_id = path_module_ids.get(request.path.strip("/"))
+    module_base_path = module_base_paths.get(module_id)
     if not module_id:
         module_id = "application"
-    return dict(module_id=module_id)
+        module_base_path = "/"
+    return dict(module_id=module_id, module_base_path=module_base_path)
 
 @_app.context_processor
 def inject_enabled_modules():
@@ -70,10 +73,13 @@ def register_all_endpoints():
         # The path to an endpoint is the word modules followed by the
         # endpoint's path prefix folloed by the path specified in the
         # call to add_endpoint()
-        endpoint_path = "/" + "/".join([x.strip("/") for x in ["modules",
-                module_attributes["url_prefix"], endpoint["path"]]])
+        path_prefix = "/" + "/".join([x.strip("/") for x in ["modules",
+                module_attributes["url_prefix"]]])
+        module_base_paths[endpoint["module_id"]] = path_prefix
 
-        path_module_ids[endpoint_path] = endpoint["module_id"]
+        endpoint_path = path_prefix + "/" + endpoint["path"].strip("/")
+
+        path_module_ids[endpoint_path.strip("/")] = endpoint["module_id"]
 
         # This is a string that is required by flask to identify the
         # endpoint, we will just use the path with slashes and spaces

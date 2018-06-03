@@ -1,12 +1,16 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="module-id" content="{{ module_id }}" />
-    <meta name="ws-auth-token" content="{{ ws_auth }}" />
-    <meta name="ws-endpoint" content="ws://127.0.0.1:5001" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <script>window.app = {};</script>
+    <script type="text/javascript">
+        window.app = {};
+        window.app.vars = {
+            moduleId: "{{ module_id }}",
+            moduleBasePath: "{{ module_base_path }}",
+            wsAuthToken: "{{ ws_auth }}",
+            wsEndpoint: "ws://127.0.0.1:5001"
+        };
+    </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='bundle.css') }}">
     <title>Smart Home Hub</title>
 </head>

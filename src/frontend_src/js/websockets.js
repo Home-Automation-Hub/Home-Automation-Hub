@@ -1,12 +1,9 @@
 import $ from "jquery"
 
 (function() {
-    var endpoint = $("meta[name='ws-endpoint']").attr("content");
-    var authToken = $("meta[name='ws-auth-token']").attr("content");
-    var moduleId = $("meta[name='module-id']").attr("content");
     var moduleEndpoints = {};
 
-    var socket = new WebSocket(endpoint);
+    var socket = new WebSocket(app.vars.wsEndpoint);
 
     socket.onmessage = function(message) {
         if (message.data == "ok") {
@@ -17,7 +14,7 @@ import $ from "jquery"
     };
 
     socket.onopen = function() {
-        socket.send(authToken)
+        socket.send(app.vars.wsAuthToken)
     }
 
 
@@ -39,14 +36,14 @@ import $ from "jquery"
         if (typeof key == "undefined") {
             key = "";
         }
-        if (typeof moduleEndpoints[moduleId] == "undefined") {
-            moduleEndpoints[moduleId] = {};
+        if (typeof moduleEndpoints[app.vars.moduleId] == "undefined") {
+            moduleEndpoints[app.vars.moduleId] = {};
         }
-        if (typeof moduleEndpoints[moduleId][key] == "undefined") {
-            moduleEndpoints[moduleId][key] = [];
+        if (typeof moduleEndpoints[app.vars.moduleId][key] == "undefined") {
+            moduleEndpoints[app.vars.moduleId][key] = [];
         }
 
-        moduleEndpoints[moduleId][key].push(callback);
+        moduleEndpoints[app.vars.moduleId][key].push(callback);
     }
 
     window.app.registerModuleWebsocketEndpoint = registerModuleWebsocketEndpoint;
