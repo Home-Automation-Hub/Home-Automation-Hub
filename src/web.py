@@ -1,4 +1,5 @@
-from flask import Flask, request, render_template, Blueprint
+from flask import Flask, request, render_template, Blueprint, \
+        send_from_directory
 
 import config
 import websocket
@@ -64,29 +65,34 @@ def register_all_endpoints():
                 "module_id"]]
 
         module_title_lookup[endpoint["module_id"]] = module_attributes["title"]
+        path_prefix = "/" + "/".join([x.strip("/") for x in ["modules",
+                module_attributes["url_prefix"]]])
 
         if not blueprint:
             blueprint = Blueprint(endpoint["module_id"],
                     module_attributes["module"].__name__,
                     template_folder="templates")
+            
+            # Register an endpoint for serving static files from the
+            # module's static directory
+            @blueprint.route(f"{path_prefix}/static/<path:path>")
+            def static_endpoint(path):
+                static_dir = os.path.join(
+                        os.path.dirname(module_attributes["module"].__file__),
+                        "static"
+                )
+                return send_from_directory(static_dir, path)
         
         # The path to an endpoint is the word modules followed by the
         # endpoint's path prefix folloed by the path specified in the
         # call to add_endpoint()
-        path_prefix = "/" + "/".join([x.strip("/") for x in ["modules",
-                module_attributes["url_prefix"]]])
         module_base_paths[endpoint["module_id"]] = path_prefix
 
         endpoint_path = path_prefix + "/" + endpoint["path"].strip("/")
-
         path_module_ids[endpoint_path.strip("/")] = endpoint["module_id"]
 
-        # This is a string that is required by flask to identify the
-        # endpoint, we will just use the path with slashes and spaces
-        # replaced by underscores
-        endpoint_identifier = endpoint_path.replace("/", "_").replace(" ", "_")
-
-        blueprint.add_url_rule(endpoint_path, endpoint_identifier,
+        blueprint.add_url_rule(endpoint_path,
+                generate_endpoint_identifier(endpoint_path),
                 endpoint["view_func"], methods=endpoint["methods"])
 
         _app.register_blueprint(blueprint)
@@ -119,6 +125,12 @@ def get_request_form():
 
 def get_request_method():
     return request.method
+
+# This is a string that is required by flask to identify the endpoint,
+# we will just use the path with slashes and spaces replaced by
+# underscores
+def generate_endpoint_identifier(path):
+    return path.replace("/", "_").replace(" ", "_")
 
 def run():
     server = WSGIServer(('', 5000), _app)
