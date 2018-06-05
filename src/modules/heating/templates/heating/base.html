@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <h1>{% block card_title %}{% endblock %}</h1>
+
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link{% if module_path_suffix=='' %} active{% endif %}" href="{{ module_base_path }}/">Dashboard</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link{% if module_path_suffix=='timers' %} active{% endif %}" href="{{ module_base_path }}/timers/">Timers</a>
+            </li>
+        </ul>
+        
+        {% block card_content %}{% endblock %}
+    </div>   
+</div>
+{% endblock %}
+
+{% block module_scripts %}
+{% endblock %}

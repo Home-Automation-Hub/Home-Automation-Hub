@@ -24,7 +24,9 @@ def inject_module_info():
     if not module_id:
         module_id = "application"
         module_base_path = "/"
-    return dict(module_id=module_id, module_base_path=module_base_path)
+    module_path_suffix = request.path.replace(module_base_path, "").strip("/")
+    return dict(module_id=module_id, module_base_path=module_base_path,
+                module_path_suffix=module_path_suffix)
 
 @_app.context_processor
 def inject_enabled_modules():
@@ -88,7 +90,7 @@ def register_all_endpoints():
         # call to add_endpoint()
         module_base_paths[endpoint["module_id"]] = path_prefix
 
-        endpoint_path = path_prefix + "/" + endpoint["path"].strip("/")
+        endpoint_path = path_prefix + "/" + endpoint["path"].lstrip("/")
         path_module_ids[endpoint_path.strip("/")] = endpoint["module_id"]
 
         blueprint.add_url_rule(endpoint_path,

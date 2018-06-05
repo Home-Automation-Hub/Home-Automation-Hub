@@ -14,8 +14,8 @@ def module_http():
     return render_template("heating/index.html", ch_is_on=ch_is_on,
                            temperature=temperature)
 
-def module_http_bar():
-    return "<h1>BAR</h1>"
+def module_timers():
+    return render_template("heating/timers.html")
 
 def toggle_heating():
     if ch_is_on:
@@ -65,7 +65,8 @@ def register(module_id_):
 
     mqtt.subscribe("flat/heating/hallway/temperature", handle_temperature)
 
-    web.add_endpoint(module_id, "/", module_http, ["GET", "POST"])
+    web.add_endpoint(module_id, "/", module_http, ["GET"])
+    web.add_endpoint(module_id, "/timers/", module_timers, ["GET"])
     web.add_endpoint(module_id, "/action/toggle_heating/", toggle_heating, ["POST"])
 
     storage = ModuleStorage(module_id)

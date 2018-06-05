@@ -1,38 +1,34 @@
-{% extends "base.html" %}
+{% extends "heating/base.html" %}
 
-{% block content %}
-<div class="card">
-    <div class="card-body">
-        <h1>Central Heating Statistics</h1>
+{% block card_title %}Central Heating{% endblock %}
 
-        <div class="float-right">
-            <span class="badge badge-success{% if not ch_is_on %} d-none{% endif %}" id="badge_heating_on">Heating is on</span>
-            <span class="badge badge-danger{% if ch_is_on %} d-none{% endif %}" id="badge_heating_off">Heating is off</span>
-            <button class="btn btn-secondary" id="btn_toggle_heating">
-                {% if ch_is_on %}
-                    Turn Off
-                {% else %}
-                    Turn On
-                {% endif %}
-            </button>
-        </div>
-        
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Temperature</th>
-                    <th>CH Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><span id="val-temperature">{{ temperature }}</span>&deg;c</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>   
-</div>
+{% block card_content %}  
+    <div class="float-right">
+        <span class="badge badge-success{% if not ch_is_on %} d-none{% endif %}" id="badge_heating_on">Heating is on</span>
+        <span class="badge badge-danger{% if ch_is_on %} d-none{% endif %}" id="badge_heating_off">Heating is off</span>
+        <button class="btn btn-secondary" id="btn_toggle_heating">
+            {% if ch_is_on %}
+                Turn Off
+            {% else %}
+                Turn On
+            {% endif %}
+        </button>
+    </div>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Temperature</th>
+                <th>CH Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span id="val-temperature">{{ temperature }}</span>&deg;c</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
 {% endblock %}
 
 {% block module_scripts %}

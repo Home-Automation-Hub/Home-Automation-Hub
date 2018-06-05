@@ -15,5 +15,5 @@ window.app.registerModuleWebsocketEndpoint(function(key, data) {
 }, "state");
 
 jQuery("#btn_toggle_heating").click(function() {
-    jQuery.post(app.vars.moduleBasePath + "/action/toggle_heating");
+    jQuery.post(app.vars.moduleBasePath + "/action/toggle_heating/");
 });
