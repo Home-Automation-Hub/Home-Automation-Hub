@@ -28,7 +28,7 @@
                     </a>
                     <li class="nav-title">Modules</li>
                     {% for module in enabled_modules %}
-                        <a href="/modules/{{ module.url_prefix }}/" class="nav-link">
+                        <a href="/modules/{{ module.url_prefix }}/" class="nav-link{% if module_base_path=='/modules/'+module.url_prefix %} active{% endif %}">
                             <i class="nav-icon fas fa-{{ module.fontawesome_icon_class }}"></i>
                             {{ module.title }}
                         </a>
