@@ -1,5 +1,6 @@
 import redis
 import config
+import json
 
 redis_instance = None
 
@@ -21,8 +22,11 @@ class ModuleStorage():
         return f"{self.key_prefix}:{key}"
 
     def get(self, key):
-        return redis_instance.get(self.prefixed_key(key))
+        data_json = redis_instance.get(self.prefixed_key(key))
+        data = json.loads(data_json)
+        return data.get("data")
 
     def set(self, key, value):
-        return redis_instance.set(self.prefixed_key(key), value)
+        data_json = json.dumps({"data": value})
+        return redis_instance.set(self.prefixed_key(key), data_json)
 
