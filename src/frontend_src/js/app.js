@@ -1,6 +1,7 @@
 import $ from "jquery"
 import "@coreui/coreui"
 import css from "../css/app.scss"
+import "bootstrap"
 
 import "./websockets.js"
 

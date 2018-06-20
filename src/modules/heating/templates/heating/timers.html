@@ -3,8 +3,28 @@
 {% block card_title %}Central Heating - Timers{% endblock %}
 
 {% block card_content %}
-    <p>Hello world!</p>
+
+<table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Temperature</th>
+            <th>Days</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% include "heating/timers_table_row.html" %}
+        {% include "heating/timers_table_row.html" %}
+        {% include "heating/timers_table_row.html" %}
+    </tbody>
+</table>
+
+<!-- {% include "heating/timers_table_row.html" %} -->
+
 {% endblock %}
 
 {% block module_scripts %}
+<script src="{{ module_base_path }}/static/js/timers.js"></script>
 {% endblock %}
