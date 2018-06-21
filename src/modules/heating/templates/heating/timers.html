@@ -4,24 +4,28 @@
 
 {% block card_content %}
 
-<table class="table">
-    <thead class="thead-dark">
-        <tr>
-            <th>Start Time</th>
-            <th>End Time</th>
-            <th>Temperature</th>
-            <th>Days</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% include "heating/timers_table_row.html" %}
-        {% include "heating/timers_table_row.html" %}
-        {% include "heating/timers_table_row.html" %}
-    </tbody>
-</table>
+<div id="timers-form">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Temperature</th>
+                <th>Days</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% include "heating/timers_table_row.html" %}
+            {% include "heating/timers_table_row.html" %}
+            {% include "heating/timers_table_row.html" %}
+        </tbody>
+    </table>
+</div>
 
-<!-- {% include "heating/timers_table_row.html" %} -->
+<script type="text/html">
+    {% include "heating/timers_table_row.html" %}
+</script>
 
 {% endblock %}
 
