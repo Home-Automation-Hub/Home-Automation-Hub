@@ -1,18 +1,32 @@
 jQuery(document).ready(function() {
     jQuery(".select-weekdays").click(function() {
-        toggleDays(this, "weekday");
+        uncheckAllDays(this);
+        checkDays(this, "weekday");
         return false;
     });
     jQuery(".select-weekend").click(function() {
-        toggleDays(this, "weekend");
+        uncheckAllDays(this);
+        checkDays(this, "weekend");
+        return false;
+    });
+    jQuery(".select-all-days").click(function() {
+        checkDays(this, "weekend");
+        checkDays(this, "weekday");
+        return false;
+    });
+    jQuery(".select-no-days").click(function() {
+        uncheckAllDays(this);
         return false;
     });
 
-    function toggleDays(clickedElement, dayType) {
-        jQuery(clickedElement).closest(".day-button-group").find("label").removeClass("active");
-        jQuery(clickedElement).closest(".day-button-group").find("label > input").prop("checked", false);
+    function checkDays(clickedElement, dayType) {
         jQuery(clickedElement).closest(".day-button-group").find("label[data-type='" + dayType + "']").addClass("active");
         jQuery(clickedElement).closest(".day-button-group").find("label[data-type='" + dayType + "'] > input").prop("checked", true);
+    }
+
+    function uncheckAllDays(clickedElement) {
+        jQuery(clickedElement).closest(".day-button-group").find("label").removeClass("active");
+        jQuery(clickedElement).closest(".day-button-group").find("label > input").prop("checked", false);
     }
 
     function serialiseTimerForm() {
