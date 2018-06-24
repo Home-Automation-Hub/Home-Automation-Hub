@@ -1,7 +1,8 @@
 import web
 from .control import heating_on, heating_off
 from flask import render_template, request, jsonify
-from . import storage
+from . import storage, websockets as ws
+from uuid import uuid4
 import re
 import json
 
@@ -68,7 +69,21 @@ def action_save_timers():
     stor = storage.get_instance()
     stor.set("timers", timers)
 
-    return jsonify({"success": True, "message": "Timers saved successfully"})
+    # Generate a random "modification ID" and send it with both the 
+    # response and the websocket push.  This is used by the frontend to
+    # ensure that the "timers have been modified" message is not shown
+    # to the page which the timers were saved from.
+    modification_id = str(uuid4())
+
+    ws.get_instance().publish("timersModified", {
+        "modification_id": modification_id
+    })
+
+    return jsonify({
+        "success": True,
+        "message": "Timers saved successfully",
+        "modification_id": modification_id
+    })
 
 
 def initialise(module_id):
