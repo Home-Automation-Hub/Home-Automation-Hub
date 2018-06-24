@@ -23,6 +23,8 @@ class ModuleStorage():
 
     def get(self, key):
         data_json = redis_instance.get(self.prefixed_key(key))
+        if not data_json:
+            return None
         data = json.loads(data_json)
         return data.get("data")
 

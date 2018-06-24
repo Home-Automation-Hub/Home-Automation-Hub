@@ -15,17 +15,50 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-            {% include "heating/timers_table_row.html" %}
-            {% include "heating/timers_table_row.html" %}
-            {% include "heating/timers_table_row.html" %}
+        <tbody id="timer-row-container">
+            {% for timer in timers %}
+                {% if timer.isTemplate %}<script type="text/html" id="template-timer-row">{% endif %}
+                    <tr class="timer-row">
+                        <td><input type="time" class="form-control" name="start-time" pattern="[0-9]{2}:[0-9]{2}" value="{{ timer.startTime }}" required></td>
+                        <td><input type="time" class="form-control" name="end-time" pattern="[0-9]{2}:[0-9]{2}" value="{{ timer.endTime }}" required></td>
+                        <td>
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="temperature" step="0.5" value="{{ timer.temperature }}">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">&deg;C</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="day-button-group">
+                                <div class="btn-group btn-group-toggle" data-toggle="buttons" role="group">
+                                    <label class="btn btn-secondary{% if timer.days["0"] %} active{% endif %}" data-type="weekday"><input type="checkbox" name="day-checkbox" autocomplete="off" value="0"{% if timer.days["0"] %} checked{% endif %}>M</label>
+                                    <label class="btn btn-secondary{% if timer.days["1"] %} active{% endif %}" data-type="weekday"><input type="checkbox" name="day-checkbox" autocomplete="off" value="1"{% if timer.days["1"] %} checked{% endif %}>T</label>
+                                    <label class="btn btn-secondary{% if timer.days["2"] %} active{% endif %}" data-type="weekday"><input type="checkbox" name="day-checkbox" autocomplete="off" value="2"{% if timer.days["2"] %} checked{% endif %}>W</label>
+                                    <label class="btn btn-secondary{% if timer.days["3"] %} active{% endif %}" data-type="weekday"><input type="checkbox" name="day-checkbox" autocomplete="off" value="3"{% if timer.days["3"] %} checked{% endif %}>T</label>
+                                    <label class="btn btn-secondary{% if timer.days["4"] %} active{% endif %}" data-type="weekday"><input type="checkbox" name="day-checkbox" autocomplete="off" value="4"{% if timer.days["4"] %} checked{% endif %}>F</label>
+                                    <label class="btn btn-secondary{% if timer.days["5"] %} active{% endif %}" data-type="weekend"><input type="checkbox" name="day-checkbox" autocomplete="off" value="5"{% if timer.days["5"] %} checked{% endif %}>S</label>
+                                    <label class="btn btn-secondary{% if timer.days["6"] %} active{% endif %}" data-type="weekend"><input type="checkbox" name="day-checkbox" autocomplete="off" value="6"{% if timer.days["6"] %} checked{% endif %}>S</label>
+                                </div>
+                                <p>Select: 
+                                    <a href="#" class="select-weekdays">Weekdays</a>,
+                                    <a href="#" class="select-weekend">Weekend</a>,
+                                    <a href="#" class="select-all-days">All</a>,
+                                    <a href="#" class="select-no-days">None</a>
+                                </p>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-delete-timer"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                {% if timer.isTemplate %}</script>{% endif %}
+            {% endfor %}
         </tbody>
     </table>
+    <button class="btn btn-success" id="btn-add-timer">Add Timer</button>
+    <button class="btn btn-primary float-right" id="btn-save-timers">Save Timers</button>
 </div>
-
-<script type="text/html">
-    {% include "heating/timers_table_row.html" %}
-</script>
 
 {% endblock %}
 
