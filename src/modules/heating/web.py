@@ -8,14 +8,14 @@ import json
 
 def view_index():
     ch_is_on=storage.get("ch_is_on")
-    temperature=23
+    control_mode=storage.get("control_mode")
+    temperature=storage.get("temperature")
 
     return render_template("heating/index.html", ch_is_on=ch_is_on,
-                           temperature=temperature)
+                           temperature=temperature, control_mode=control_mode)
 
 def view_timers():
-    stor = storage.get_instance()
-    timers = stor.get("timers") or []
+    timers = storage.get("timers") or []
 
     # Append a false "timer" which will prompt jinja to wrap it in
     # the approprate tags to be used as a template for adding new timers
@@ -34,6 +34,22 @@ def action_toggle_heating():
         heating_on()
 
     return ""
+
+def action_save_control_mode():
+    request_data = request.get_json()
+    control_mode = request_data.get("mode")
+
+    if control_mode not in ["timer", "manual"]:
+        return jsonify({"success": False, "message": "Invalid control mode"})
+
+    storage.set("control_mode", control_mode)
+
+    ws.get_instance().publish("controlModeModified", {
+        "control_mode": control_mode
+    })
+
+    return jsonify({"success": True})
+
 
 def action_save_timers():
     timers = request.get_json()
@@ -66,8 +82,7 @@ def action_save_timers():
     if error:
         return jsonify({"success": False, "message": error})        
 
-    stor = storage.get_instance()
-    stor.set("timers", timers)
+    storage.set("timers", timers)
 
     # Generate a random "modification ID" and send it with both the 
     # response and the websocket push.  This is used by the frontend to
@@ -93,3 +108,5 @@ def initialise(module_id):
             action_toggle_heating, ["POST"])
     web.add_endpoint(module_id, "/action/save_timers/",
             action_save_timers, ["POST"])
+    web.add_endpoint(module_id, "/action/save_control_mode/",
+            action_save_control_mode, ["POST"])

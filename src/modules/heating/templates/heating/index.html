@@ -15,6 +15,25 @@
         </button>
     </div>
 
+    <div class="card col-md-8 offset-md-2">
+        <div class="card-body">
+            <div class="text-center">
+                Control Mode:
+                <div class="btn-group btn-group-toggle" data-toggle="buttons" id="toggle-control-mode">
+                    <label class="btn btn-secondary{% if control_mode=='manual' %} active{% endif %}" id="control-mode-manual">
+                        <input type="radio" name="control-mode" data-mode="manual" autocomplete="off"{% if control_mode=='manual' %} checked{% endif %}> Manual
+                    </label>
+                    <label class="btn btn-secondary{% if control_mode=='timer' %} active{% endif %}" id="control-mode-timer">
+                        <input type="radio" name="control-mode" data-mode="timer" autocomplete="off"{% if control_mode=='timer' %} checked{% endif %}> Timer
+                    </label>
+                </div>
+            </div>
+            <div id="manual-controls" class="{% if control_mode!='manual' %}d-none{% endif %}">
+                <p>Manual controls will go here!</p>
+            </div>
+        </div>
+    </div>
+
     <table class="table">
         <thead class="thead-dark">
             <tr>

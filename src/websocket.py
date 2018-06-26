@@ -42,7 +42,7 @@ def start_server(config):
 
     def thread_target():
         asyncio.set_event_loop(asyncio.new_event_loop())
-        asyncio.get_event_loop().run_until_complete(websockets.serve(socket_handler, 'localhost', 5001))
+        asyncio.get_event_loop().run_until_complete(websockets.serve(socket_handler, '', 5001))
         asyncio.get_event_loop().run_forever()
 
     threading.Thread(target=thread_target).start()

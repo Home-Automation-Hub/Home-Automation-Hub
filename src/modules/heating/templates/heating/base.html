@@ -1,21 +1,29 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="card">
-    <div class="card-body">
-        <!-- <h1>{% block card_title %}{% endblock %}</h1> -->
+{% block module_head %}
+<link rel="stylesheet" href="{{ module_base_path }}/static/css/heating.css">
+{% endblock %}
 
-        <ul class="nav nav-tabs">
-            <li class="nav-item">
-                <a class="nav-link{% if module_path_suffix=='' %} active{% endif %}" href="{{ module_base_path }}/">Dashboard</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link{% if module_path_suffix=='timers' %} active{% endif %}" href="{{ module_base_path }}/timers/">Timers</a>
-            </li>
-        </ul>
-        
-        {% block card_content %}{% endblock %}
-    </div>   
+{% block content %}
+<div class="mt-2">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link{% if module_path_suffix=='' %} active{% endif %}" href="{{ module_base_path }}/">Dashboard</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link{% if module_path_suffix=='timers' %} active{% endif %}" href="{{ module_base_path }}/timers/">Timers</a>
+        </li>
+    </ul>
+    <div class="card card-tabbed">
+        <div class="card-body">
+            <!-- <h1>{% block card_title %}{% endblock %}</h1> -->
+    
+            
+            <div class="container-fluid">
+                {% block card_content %}{% endblock %}
+            </div>
+        </div>   
+    </div>
 </div>
 {% endblock %}
 

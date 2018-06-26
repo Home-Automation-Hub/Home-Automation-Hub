@@ -8,7 +8,7 @@ def get_instance():
     return instance
 
 def set_default_values():
-    instance.set("ch_is_on", True)
+    instance.set("ch_is_on", False)
 
 def set(key, value):
     return instance.set(key, value)

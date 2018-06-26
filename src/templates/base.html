@@ -8,10 +8,11 @@
             moduleId: "{{ module_id }}",
             moduleBasePath: "{{ module_base_path }}",
             wsAuthToken: "{{ ws_auth }}",
-            wsEndpoint: "ws://127.0.0.1:5001"
+            wsEndpoint: "ws://" + window.location.hostname + ":5001" // TODO: Improve this!
         };
     </script>
     <link rel="stylesheet" href="{{ url_for('static', filename='bundle.css') }}">
+    {% block module_head %}{% endblock %}
     <title>Smart Home Hub</title>
 </head>
 <body class="app sidebar-md-show sidebar-fixed">
