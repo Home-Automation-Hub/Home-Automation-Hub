@@ -28,8 +28,26 @@
                     </label>
                 </div>
             </div>
-            <div id="manual-controls" class="{% if control_mode!='manual' %}d-none{% endif %}">
-                <p>Manual controls will go here!</p>
+            <div id="manual-controls" class="mt-2{% if control_mode!='manual' %} d-none{% endif %}">
+                <div class="text-center">
+                    <div class="form-inline d-block">
+                        Turn on
+                        <select class="form-control" id="select-manual-start-time">
+                            <option value="now">Now</option>
+                            <option value="at">At</option>
+                        </select>
+
+                        <input type="time" class="form-control" name="manual-start-time" pattern="[0-9]{2}:[0-9]{2}" required>
+
+                        <select class="form-control" id="select-manual-end-time">
+                            <option value="indefinitely">Indefinitely</option>
+                            <option value="until">Until</option>
+                        </select>
+                        
+                        <input type="time" class="form-control" name="end-time" pattern="[0-9]{2}:[0-9]{2}" required>
+                        <button class="btn btn-success">Go!</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
