@@ -1,5 +1,7 @@
 import mqtt
+import time
 from . import storage, websockets as ws
+from multiprocessing import Process
 
 def heating_on():
     mqtt.publish("flat/heating/hallway/chState", "on")
@@ -35,5 +37,13 @@ def handle_temperature(topic, message):
         "latest_reading": temperature
     })
 
+def process_timer_management():
+    while True:
+        control_mode = storage.get("control_mode")
+        print(control_mode)
+
+        time.sleep(1)
+
 def initialise(module_id):
     mqtt.subscribe("flat/heating/hallway/temperature", handle_temperature)
+    Process(target=process_timer_management).start()
