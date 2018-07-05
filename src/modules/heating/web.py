@@ -1,7 +1,6 @@
 import web
-from .control import heating_on, heating_off
 from flask import render_template, request, jsonify
-from . import storage, websockets as ws
+from . import storage, control, websockets as ws
 from uuid import uuid4
 import re
 import json
@@ -29,9 +28,9 @@ def view_timers():
 def action_toggle_heating():
     ch_is_on=storage.get("ch_is_on")
     if ch_is_on:
-        heating_off()
+        control.heating_off()
     else:
-        heating_on()
+        control.heating_on()
 
     return ""
 
@@ -100,6 +99,48 @@ def action_save_timers():
         "modification_id": modification_id
     })
 
+def action_store_manual_control():
+    control_options = request.get_json()
+    start_time_type = control_options.get("startTimeType")
+    start_time = control_options.get("startTime")
+    end_time_type = control_options.get("endTimeType")
+    end_time = control_options.get("endTime")
+    
+    error = None
+
+    if start_time_type not in ["at", "now"]:
+        error = "Start time type must be either 'at' or 'now'"
+
+    if end_time_type not in ["until", "indefinitely"]:
+        error = "End time type must be either 'until' or 'indefinitely'"
+
+    time_re = re.compile(r"^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$")
+    if start_time_type == "at":
+        if time_re.match(start_time) == None:
+            error = "Start time must be of the format HH:MM"
+
+    if end_time_type == "until":
+        if time_re.match(end_time) == None:
+            error = "End time must be of the format HH:MM"
+
+    if error:
+        return jsonify({"success": False, "message": error})        
+
+    storage.set("manual_control_timing", {
+        "start": start_time if start_time_type == "at" else "immediate",
+        "end": end_time if end_time_type == "until" else "indefinite"
+    })
+
+    if start_time_type == "now":
+        control.heating_set_on()
+    else:
+        control.heating_set_off()
+
+    return jsonify({
+        "success": True,
+        "message": "Manual control saved successfully"
+    })
+
 
 def initialise(module_id):
     web.add_endpoint(module_id, "/", view_index, ["GET"])
@@ -110,3 +151,5 @@ def initialise(module_id):
             action_save_timers, ["POST"])
     web.add_endpoint(module_id, "/action/save_control_mode/",
             action_save_control_mode, ["POST"])
+    web.add_endpoint(module_id, "/action/store_manual_control/",
+            action_store_manual_control, ["POST"])

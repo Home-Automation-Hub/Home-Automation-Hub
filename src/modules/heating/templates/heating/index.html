@@ -37,15 +37,15 @@
                             <option value="at">At</option>
                         </select>
 
-                        <input type="time" class="form-control" name="manual-start-time" pattern="[0-9]{2}:[0-9]{2}" required>
+                        <input type="time" class="form-control d-none" id="manual-start-time" pattern="[0-9]{2}:[0-9]{2}" required>
 
                         <select class="form-control" id="select-manual-end-time">
                             <option value="indefinitely">Indefinitely</option>
                             <option value="until">Until</option>
                         </select>
                         
-                        <input type="time" class="form-control" name="end-time" pattern="[0-9]{2}:[0-9]{2}" required>
-                        <button class="btn btn-success">Go!</button>
+                        <input type="time" class="form-control d-none" id="manual-end-time" pattern="[0-9]{2}:[0-9]{2}" required>
+                        <button class="btn btn-success" id="submit-manual-control">Go!</button>
                     </div>
                 </div>
             </div>

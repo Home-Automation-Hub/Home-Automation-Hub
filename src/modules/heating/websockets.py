@@ -9,9 +9,9 @@ def get_instance():
     return ws
 
 def push_state():
-    print(storage.get("ch_is_on"))
     ws.publish("state", {
-        "ch_is_on": storage.get("ch_is_on")
+        "ch_running": storage.get("ch_running"),
+        "ch_set_on": storage.get("ch_set_on"),
     })
 
 def initialise(module_id):
