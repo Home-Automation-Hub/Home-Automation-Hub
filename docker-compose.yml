@@ -1,0 +1,12 @@
+version: '3'
+services:
+  mqtt:
+    image: "eclipse-mosquitto"
+    ports:
+      - "1883:1883"
+  redis:
+    image: "redis"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis_persist:/data

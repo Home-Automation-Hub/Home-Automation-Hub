@@ -5,3 +5,4 @@ venv
 src/yarn.lock
 src/node_modules
 src/static
+redis_persist
