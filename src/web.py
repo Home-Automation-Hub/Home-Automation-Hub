@@ -4,7 +4,7 @@ from flask import Flask, request, render_template, Blueprint, \
 import config
 import websocket
 import os
-from gevent.wsgi import WSGIServer
+from gevent.pywsgi import WSGIServer
 
 _app = Flask(__name__)
 path_module_ids = {}
