@@ -1,7 +1,9 @@
 import mqtt
 import time
 from . import storage, websockets as ws
-from multiprocessing import Process
+import threading
+import datetime
+import dateutil.parser
 
 def heating_on():
     mqtt.publish("flat/heating/hallway/chState", "on")
@@ -39,11 +41,29 @@ def handle_temperature(topic, message):
 
 def process_timer_management():
     while True:
+        now = datetime.datetime.now()
         control_mode = storage.get("control_mode")
-        print(control_mode)
+        if control_mode == "manual":
+            timing = storage.get("manual_control_timing")
+            state = storage.get("manual_control_state")
+
+            # If set to start at a specified time and currently waiting
+            # until told to start 
+            if timing.get("start") != "immediate" and state == "pending":
+                start_timestamp = dateutil.parser.parse(timing.get("start"))
+                if now > start_timestamp:
+                    heating_set_on()
+                    storage.set("manual_control_state", "running")
+
+            if timing.get("end") != "indefinite" and state == "running":
+                end_timestamp = dateutil.parser.parse(timing.get("end"))
+                if now > end_timestamp:
+                    heating_set_off()
+                    storage.set("manual_control_state", "complete")
+                
 
         time.sleep(1)
 
 def initialise(module_id):
     mqtt.subscribe("flat/heating/hallway/temperature", handle_temperature)
-    Process(target=process_timer_management).start()
+    threading.Thread(target=process_timer_management).start()

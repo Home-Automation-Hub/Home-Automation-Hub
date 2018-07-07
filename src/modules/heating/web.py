@@ -4,6 +4,7 @@ from . import storage, control, websockets as ws
 from uuid import uuid4
 import re
 import json
+import datetime
 
 def view_index():
     ch_is_on=storage.get("ch_is_on")
@@ -124,16 +125,45 @@ def action_store_manual_control():
             error = "End time must be of the format HH:MM"
 
     if error:
-        return jsonify({"success": False, "message": error})        
+        return jsonify({"success": False, "message": error})
+
+    # Interpret the start and end times as dates.  If the a time has
+    # already passed today, treat it as starting tomorrow. If the end
+    # falls before the start, treat is ending on that time the day after
+    # it has started.
+
+    now = datetime.datetime.now()
+    # Set to now to allow the calculation for end timestamp to work
+    # when scheduled for immediate start
+    start_dt = now
+    if start_time_type == "at":
+        start_dt = datetime.datetime.strptime(start_time, "%H:%M")
+        start_dt = start_dt.replace(day=now.day, month=now.month, year=now.year)
+        # If datetime is in the past then interpret as meaning tomorrow
+        if start_dt < now:
+            start_dt = start_dt + datetime.timedelta(days=1)
+
+    end_dt = None
+    if end_time_type == "until":
+        end_dt = datetime.datetime.strptime(end_time, "%H:%M")
+        end_dt = end_dt.replace(day=now.day, month=now.month, year=now.year)
+        # Keep adding days until end falls after start
+        while end_dt < start_dt:
+            end_dt = end_dt + datetime.timedelta(days=1)
+
+    start = start_dt.isoformat() if start_time_type == "at" else "immediate"
+    end = end_dt.isoformat() if end_time_type == "until" else "indefinite"
 
     storage.set("manual_control_timing", {
-        "start": start_time if start_time_type == "at" else "immediate",
-        "end": end_time if end_time_type == "until" else "indefinite"
+        "start": start,
+        "end": end
     })
 
     if start_time_type == "now":
+        storage.set("manual_control_state", "running")
         control.heating_set_on()
     else:
+        storage.set("manual_control_state", "pending")
         control.heating_set_off()
 
     return jsonify({
