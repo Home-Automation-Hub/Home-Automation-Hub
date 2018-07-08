@@ -16,6 +16,22 @@ window.app.registerModuleWebsocketEndpoint(function(key, data) {
 }, "state");
 
 window.app.registerModuleWebsocketEndpoint(function(key, data) {
+    jQuery("#manual-controls-container div.alert").remove();
+    if (data.state == "pending" || data.state == "running") {
+        var alertClass = (data.state == "pending") ? "warning" : "success";
+        
+        jQuery("#manual-control-form").addClass("d-none");
+        jQuery("#manual-control-form").removeClass("d-block");
+        var alertHtml = '<div class="alert alert-' + alertClass + '">'
+                 + data.message + '</div>';
+        jQuery("#manual-controls-container").append(alertHtml);
+    } else {
+        jQuery("#manual-control-form").removeClass("d-none");
+        jQuery("#manual-control-form").addClass("d-block");
+    }
+}, "index_manual_message");
+
+window.app.registerModuleWebsocketEndpoint(function(key, data) {
     if (data["control_mode"] == "manual") {
         jQuery("#manual-controls").removeClass("d-none");
         jQuery("#toggle-control-mode label").removeClass("active");

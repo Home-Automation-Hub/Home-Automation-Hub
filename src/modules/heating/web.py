@@ -5,14 +5,20 @@ from uuid import uuid4
 import re
 import json
 import datetime
+import dateutil.parser
 
 def view_index():
     ch_is_on=storage.get("ch_is_on")
     control_mode=storage.get("control_mode")
     temperature=storage.get("temperature")
+    
+    manual_control_state, manual_state_message = \
+            control.generate_manual_state_message()
 
     return render_template("heating/index.html", ch_is_on=ch_is_on,
-                           temperature=temperature, control_mode=control_mode)
+                           temperature=temperature, control_mode=control_mode,
+                           manual_control_state=manual_control_state,
+                           manual_state_message=manual_state_message)
 
 def view_timers():
     timers = storage.get("timers") or []
@@ -165,6 +171,12 @@ def action_store_manual_control():
     else:
         storage.set("manual_control_state", "pending")
         control.heating_set_off()
+
+    state, message = control.generate_manual_state_message()
+    ws.get_instance().publish("index_manual_message", {
+        "state": state,
+        "message": message
+    })
 
     return jsonify({
         "success": True,

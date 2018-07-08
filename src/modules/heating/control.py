@@ -40,6 +40,13 @@ def handle_temperature(topic, message):
     })
 
 def process_timer_management():
+    def update_manual_control_message():
+        state, message = generate_manual_state_message()
+        ws.get_instance().publish("index_manual_message", {
+            "state": state,
+            "message": message
+        })
+
     while True:
         now = datetime.datetime.now()
         control_mode = storage.get("control_mode")
@@ -49,20 +56,66 @@ def process_timer_management():
 
             # If set to start at a specified time and currently waiting
             # until told to start 
-            if timing.get("start") != "immediate" and state == "pending":
+            if state == "pending" and timing.get("start") != "immediate":
                 start_timestamp = dateutil.parser.parse(timing.get("start"))
                 if now > start_timestamp:
                     heating_set_on()
                     storage.set("manual_control_state", "running")
+                    update_manual_control_message()
 
-            if timing.get("end") != "indefinite" and state == "running":
+            if state == "running" and timing.get("end") != "indefinite":
                 end_timestamp = dateutil.parser.parse(timing.get("end"))
                 if now > end_timestamp:
                     heating_set_off()
                     storage.set("manual_control_state", "complete")
+                    update_manual_control_message()
                 
 
         time.sleep(1)
+
+def generate_manual_state_message():
+    manual_control_state=storage.get("manual_control_state")
+    manual_control_timing=storage.get("manual_control_timing") or {}
+
+    if not (manual_control_state or manual_control_timing):
+        return None, None
+
+    try:
+        timestamp = dateutil.parser.parse(manual_control_timing.get("start"))
+
+        date_format = "%H:%M"
+        if timestamp.date() != datetime.datetime.now().date():
+            date_format += " (on %Y-%m-%d)"
+        manual_control_timing["start"] = timestamp.strftime(date_format)
+    except ValueError:
+        pass # This will occur if the field is set to "immediate"
+
+    try:
+        timestamp = dateutil.parser.parse(manual_control_timing.get("end"))
+
+        date_format = "%H:%M"
+        if timestamp.date() != datetime.datetime.now().date():
+            date_format += " (on %Y-%m-%d)"
+        manual_control_timing["end"] = timestamp.strftime(date_format)
+    except ValueError:
+        pass # This will occur if the field is set to "indefinite"
+
+    message = "Heating is off"
+    if manual_control_state in ["running", "pending"]:
+        if manual_control_state == "running":
+            message = "Heating is currently running until "
+        else:
+            message = "Heating will turn on at " \
+                    + manual_control_timing.get("start") \
+                    + " and will run until "
+            
+        if manual_control_timing.get("end") == "indefinite":
+            message += "it is switched off manually"
+        else:
+            message += manual_control_timing.get("end")
+        
+    
+    return manual_control_state, message
 
 def initialise(module_id):
     mqtt.subscribe("flat/heating/hallway/temperature", handle_temperature)
