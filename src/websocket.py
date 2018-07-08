@@ -8,9 +8,16 @@ import json
 
 redis_connection_host = None
 redis_connection_db = None
+redis_pool = None
 
 
 async def socket_handler(websocket, path):
+    global redis_pool
+
+    if not redis_pool:
+        redis_pool = await aioredis.create_pool(address=redis_connection_host,
+                db=redis_connection_db)
+
     auth_key = await websocket.recv()
 
     redis_key = f"ws:auth:{auth_key}"
@@ -22,17 +29,15 @@ async def socket_handler(websocket, path):
 
     await websocket.send("ok")
 
-    redis = await aioredis.create_connection(address=redis_connection_host, db=redis_connection_db)
     channel = aioredis.Channel("websocket", is_pattern=False)
-    redis.execute_pubsub("subscribe", channel)
+    redis_pool.execute_pubsub("subscribe", channel)
     try:
         while True:
             message = await channel.get()
             if message:
                 await websocket.send(message.decode("UTF-8"))
     except websockets.exceptions.ConnectionClosed:
-        await redis.execute_pubsub("unsubscribe", channel)
-        redis.close()
+        await redis_pool.execute_pubsub("unsubscribe", channel)
 
 
 def start_server(config):
