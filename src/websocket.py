@@ -5,19 +5,15 @@ import aioredis
 import storage
 import uuid
 import json
+import config
 
+socket_queues = {}
+# TODO: Get rid of below global variables and pass them properly
 redis_connection_host = None
 redis_connection_db = None
-redis_pool = None
-
 
 async def socket_handler(websocket, path):
-    global redis_pool
-
-    if not redis_pool:
-        redis_pool = await aioredis.create_pool(address=redis_connection_host,
-                db=redis_connection_db)
-
+    global socket_queues
     auth_key = await websocket.recv()
 
     redis_key = f"ws:auth:{auth_key}"
@@ -29,35 +25,42 @@ async def socket_handler(websocket, path):
 
     await websocket.send("ok")
 
-    channel = aioredis.Channel("websocket", is_pattern=False)
-    redis_pool.execute_pubsub("subscribe", channel)
+    socket_id = str(uuid.uuid4())
+    socket_queues[socket_id] = asyncio.Queue()
+    
     try:
         while True:
-            message = await channel.get()
+            message = await socket_queues[socket_id].get()
             if message:
-                await websocket.send(message.decode("UTF-8"))
+                await websocket.send(message)
     except websockets.exceptions.ConnectionClosed:
-        await redis_pool.execute_pubsub("unsubscribe", channel)
+        del socket_queues[socket_id]
 
+async def redis_pubsub_handler():
+    redis = await aioredis.create_connection(address=redis_connection_host,
+    db=redis_connection_db)
+    channel = aioredis.Channel("websocket", is_pattern=False)
+    redis.execute_pubsub("subscribe", channel)
+
+    while True:
+        message = await channel.get()
+        if message:
+            for queue in socket_queues.values():
+                queue.put_nowait(message.decode("UTF-8"))
 
 def start_server(config):
     global redis_connection_host, redis_connection_db
-    redis_connection_host = (config.redis_config.get("host"), config.redis_config.get("port"))
+    redis_connection_host = (config.redis_config.get("host"),
+            config.redis_config.get("port"))
     redis_connection_db = config.redis_config.get("db")
 
     def thread_target():
         asyncio.set_event_loop(asyncio.new_event_loop())
         asyncio.get_event_loop().run_until_complete(websockets.serve(socket_handler, '', 5001))
+        asyncio.get_event_loop().run_until_complete(redis_pubsub_handler())
         asyncio.get_event_loop().run_forever()
 
     threading.Thread(target=thread_target).start()
-
-    def send_socket_message(message):
-        print("Socket message 2: " + str(message))
-
-    pubsub = storage.redis_instance.pubsub()
-    pubsub.subscribe(**{'websocket': send_socket_message})
-
 
 def generate_auth_token():
     token = str(uuid.uuid4()).replace("-", "")
