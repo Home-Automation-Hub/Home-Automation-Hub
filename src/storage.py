@@ -31,4 +31,3 @@ class ModuleStorage():
     def set(self, key, value):
         data_json = json.dumps({"data": value})
         return redis_instance.set(self.prefixed_key(key), data_json)
-

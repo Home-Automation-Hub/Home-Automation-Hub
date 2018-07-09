@@ -1,6 +1,7 @@
 import mqtt
 import time
 from . import storage, websockets as ws
+import statistics
 import threading
 import datetime
 import dateutil.parser
@@ -31,8 +32,9 @@ def heating_set_off():
     heating_off() # This will also call ws.push_state()
 
 def handle_temperature(topic, message):
-    global temperature
-    temperature = float(message)
+    reading = float(message)
+    storage.store_temperature_reading(reading)
+    temperature = statistics.mean(storage.get_temperature_readings())
     storage.set("temperature", temperature)
 
     ws.get_instance().publish("temperature", {
