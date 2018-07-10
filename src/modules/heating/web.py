@@ -20,6 +20,11 @@ def view_index():
                            manual_control_state=manual_control_state,
                            manual_state_message=manual_state_message)
 
+def view_settings():
+    num_readings_average = storage.get("num_readings_average")
+    return render_template("heating/settings.html",
+            num_readings_average=num_readings_average)
+
 def view_timers():
     timers = storage.get("timers") or []
 
@@ -183,10 +188,38 @@ def action_store_manual_control():
         "message": "Manual control saved successfully"
     })
 
+def action_save_settings():
+    control_options = request.get_json()
+    num_readings_average = control_options.get("numReadingsAverage")
+
+    try:
+        num_readings_average = int(num_readings_average)
+    except ValueError:
+        return jsonify({
+            "success": False,
+            "message": ("Value for average number of readings must be an "
+                    "integer")
+        })
+
+    if num_readings_average < 1:
+        return jsonify({
+            "success": False,
+            "message": ("Value for average number of readings must be greater "
+                    "than 1")
+        })
+    
+    storage.set("num_readings_average", num_readings_average)
+
+    return jsonify({
+        "success": True,
+        "message": "Settings saved successfully!"
+    })
+
 
 def initialise(module_id):
     web.add_endpoint(module_id, "/", view_index, ["GET"])
     web.add_endpoint(module_id, "/timers/", view_timers, ["GET"])
+    web.add_endpoint(module_id, "/settings/", view_settings, ["GET"])
     web.add_endpoint(module_id, "/action/toggle_heating/",
             action_toggle_heating, ["POST"])
     web.add_endpoint(module_id, "/action/save_timers/",
@@ -195,3 +228,5 @@ def initialise(module_id):
             action_save_control_mode, ["POST"])
     web.add_endpoint(module_id, "/action/store_manual_control/",
             action_store_manual_control, ["POST"])
+    web.add_endpoint(module_id, "/action/save_settings/",
+            action_save_settings, ["POST"])
