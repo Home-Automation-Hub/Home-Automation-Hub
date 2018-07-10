@@ -53,6 +53,7 @@
                         </div>
                     {% endif %}
                 </div>
+                <button id="btn-cancel-manual-operation" class="btn btn-danger{% if manual_control_state not in ['running', 'pending'] %} d-none{% endif %}">Cancel/Stop Manual Operation</button>
             </div>
         </div>
     </div>

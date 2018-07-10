@@ -41,14 +41,14 @@ def handle_temperature(topic, message):
         "latest_reading": temperature
     })
 
-def process_timer_management():
-    def update_manual_control_message():
-        state, message = generate_manual_state_message()
-        ws.get_instance().publish("index_manual_message", {
-            "state": state,
-            "message": message
-        })
+def update_manual_control_message():
+    state, message = generate_manual_state_message()
+    ws.get_instance().publish("index_manual_message", {
+        "state": state,
+        "message": message
+    })
 
+def process_timer_management():
     while True:
         now = datetime.datetime.now()
         control_mode = storage.get("control_mode")
@@ -70,8 +70,7 @@ def process_timer_management():
                 if now > end_timestamp:
                     heating_set_off()
                     storage.set("manual_control_state", "complete")
-                    update_manual_control_message()
-                
+                    update_manual_control_message()       
 
         time.sleep(1)
 

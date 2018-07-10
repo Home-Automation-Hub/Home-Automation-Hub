@@ -215,6 +215,12 @@ def action_save_settings():
         "message": "Settings saved successfully!"
     })
 
+def action_cancel_manual_operation():
+    control.heating_set_off()
+    storage.set("manual_control_state", "complete")
+    control.update_manual_control_message()
+
+    return jsonify({"success": True})
 
 def initialise(module_id):
     web.add_endpoint(module_id, "/", view_index, ["GET"])
@@ -230,3 +236,5 @@ def initialise(module_id):
             action_store_manual_control, ["POST"])
     web.add_endpoint(module_id, "/action/save_settings/",
             action_save_settings, ["POST"])
+    web.add_endpoint(module_id, "/action/cancel_manual_operation/",
+            action_cancel_manual_operation, ["POST"])

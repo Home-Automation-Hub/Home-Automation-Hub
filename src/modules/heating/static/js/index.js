@@ -25,9 +25,11 @@ window.app.registerModuleWebsocketEndpoint(function(key, data) {
         var alertHtml = '<div class="alert alert-' + alertClass + '">'
                  + data.message + '</div>';
         jQuery("#manual-controls-container").append(alertHtml);
+        jQuery("#btn-cancel-manual-operation").removeClass("d-none");
     } else {
         jQuery("#manual-control-form").removeClass("d-none");
         jQuery("#manual-control-form").addClass("d-block");
+        jQuery("#btn-cancel-manual-operation").addClass("d-none");
     }
 }, "index_manual_message");
 
@@ -101,4 +103,10 @@ jQuery("#submit-manual-control").click(function() {
             }
         }            
     });
+});
+
+jQuery("#btn-cancel-manual-operation").click(function() {
+    jQuery.post(
+        app.vars.moduleBasePath + "/action/cancel_manual_operation/"
+    );
 });
