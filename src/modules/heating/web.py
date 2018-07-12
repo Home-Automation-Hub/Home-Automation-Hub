@@ -24,8 +24,13 @@ def view_index():
 
 def view_settings():
     num_readings_average = storage.get("num_readings_average")
+    thermostat_delta_below = storage.get("thermostat_delta_below")
+    thermostat_delta_above = storage.get("thermostat_delta_above")
     return render_template("heating/settings.html",
-            num_readings_average=num_readings_average)
+            num_readings_average=num_readings_average,
+            thermostat_delta_below=thermostat_delta_below,
+            thermostat_delta_above=thermostat_delta_above
+        )
 
 def view_timers():
     timers = storage.get("timers") or []
@@ -193,14 +198,26 @@ def action_store_manual_control():
 def action_save_settings():
     control_options = request.get_json()
     num_readings_average = control_options.get("numReadingsAverage")
+    thermostat_delta_below = control_options.get("thermostatDeltaBelow")
+    thermostat_delta_above = control_options.get("thermostatDeltaAbove")
 
     try:
         num_readings_average = int(num_readings_average)
     except ValueError:
         return jsonify({
             "success": False,
-            "message": ("Value for average number of readings must be an "
-                    "integer")
+            "message": ("Value for the following fields must be integers: \n"
+                "\nNumber of readings in temperature average")
+        })
+
+    try:
+        thermostat_delta_below = float(thermostat_delta_below)
+        thermostat_delta_above = float(thermostat_delta_above)
+    except ValueError:
+        return jsonify({
+            "success": False,
+            "message": ("Value for the following fields must be floats: \n"
+                "\nThermostat Temperature Deltas")
         })
 
     if num_readings_average < 1:
@@ -211,6 +228,8 @@ def action_save_settings():
         })
     
     storage.set("num_readings_average", num_readings_average)
+    storage.set("thermostat_delta_below", thermostat_delta_below)
+    storage.set("thermostat_delta_above", thermostat_delta_above)
 
     return jsonify({
         "success": True,

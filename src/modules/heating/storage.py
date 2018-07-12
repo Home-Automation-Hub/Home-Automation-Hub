@@ -10,13 +10,25 @@ def get_instance():
 def set_default_values():
     instance.set("ch_is_on", False)
 
-    # How many temperature readings we average to calculate the current
-    # temperature
-    if not instance.get("num_readings_average"):
-        instance.set("num_readings_average", 6)
+    default_values = {
+        # How many temperature readings we average to calculate the current
+        # temperature
+        "num_readings_average": 6,
+        # How far above the set temperature the environment must be
+        # before thermostat turns heating off
+        "thermostat_delta_above": 0.5,
+        # How far below the set temperature the environment must be
+        # before thermostat turns heating on
+        "thermostat_delta_below": 0.5,
+        "thermostat_temperature": 21,
 
-    if not instance.get("thermostat_temperature"):
-        instance.set("thermostat_temperature", 21)
+    }
+
+    for key in default_values:
+        value = default_values[key]
+        if not instance.get(key):
+            instance.set(key, value)
+
     
     instance.redis.delete(instance.prefixed_key("temp_readings"))
     instance.redis.delete(instance.prefixed_key("temperature"))
