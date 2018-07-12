@@ -11,6 +11,7 @@ def view_index():
     ch_is_on=storage.get("ch_is_on")
     control_mode=storage.get("control_mode")
     temperature=storage.get("temperature")
+    thermostat_temperature = float(storage.get("thermostat_temperature"))
     
     manual_control_state, manual_state_message = \
             control.generate_manual_state_message()
@@ -18,7 +19,8 @@ def view_index():
     return render_template("heating/index.html", ch_is_on=ch_is_on,
                            temperature=temperature, control_mode=control_mode,
                            manual_control_state=manual_control_state,
-                           manual_state_message=manual_state_message)
+                           manual_state_message=manual_state_message,
+                           thermostat_temperature=thermostat_temperature)
 
 def view_settings():
     num_readings_average = storage.get("num_readings_average")
@@ -222,6 +224,21 @@ def action_cancel_manual_operation():
 
     return jsonify({"success": True})
 
+def action_change_thermostat(direction):
+    change_value = 0.5
+    if direction == "decrement":
+        change_value = -0.5
+
+    value = storage.get("thermostat_temperature")
+    value += change_value
+    storage.set("thermostat_temperature", value)
+
+    ws.get_instance().publish("thermostat_updated", {
+        "value": value
+    })
+
+    return jsonify({"success": True})
+
 def initialise(module_id):
     web.add_endpoint(module_id, "/", view_index, ["GET"])
     web.add_endpoint(module_id, "/timers/", view_timers, ["GET"])
@@ -238,3 +255,5 @@ def initialise(module_id):
             action_save_settings, ["POST"])
     web.add_endpoint(module_id, "/action/cancel_manual_operation/",
             action_cancel_manual_operation, ["POST"])
+    web.add_endpoint(module_id, "/action/change_thermostat/<direction>/",
+            action_change_thermostat, ["POST"])

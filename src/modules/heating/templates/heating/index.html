@@ -28,6 +28,7 @@
                     </label>
                 </div>
             </div>
+
             <div id="manual-controls" class="mt-2{% if control_mode!='manual' %} d-none{% endif %}">
                 <div id="manual-controls-container" class="text-center">
                     <div id="manual-control-form" class="form-inline {% if not manual_control_state or manual_control_state == "complete" %}d-block{% else %}d-none{% endif %}">
@@ -54,6 +55,23 @@
                     {% endif %}
                 </div>
                 <button id="btn-cancel-manual-operation" class="btn btn-danger{% if manual_control_state not in ['running', 'pending'] %} d-none{% endif %}">Cancel/Stop Manual Operation</button>
+            </div>
+
+            <hr>
+
+            <div id="thermostat-control-container" class="text-center">
+                <h5>Thermostat</h5>
+                <div class="mx-auto" id="thermostat-controls">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-secondary btn-thermostat-adjust" data-direction="decrement"><i class="fa fa-minus"></i></button>
+                        </div>
+                        <label class="input-group-text" id="thermostat-temperature-label"><span id="thermostat-temperature">{{ thermostat_temperature }}</span>&deg;C</label>
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary btn-thermostat-adjust" data-direction="increment"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

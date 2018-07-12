@@ -3,3 +3,16 @@
     border-top-left-radius: 0px !important;
     border-top-right-radius: 0px !important;
 }
+
+#thermostat-controls {
+    width: 160px;
+}
+
+#thermostat-temperature-label {
+    /* Stolen from the .form-control class, this will cause the label to
+    fill the full width that is available to it without wrapping the
+    buttons onto new lines */
+    flex: 1 1 auto;
+    width: 1%;
+    display: inline-block !important;
+}

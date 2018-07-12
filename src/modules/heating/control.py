@@ -35,8 +35,9 @@ def handle_temperature(topic, message):
     reading = float(message)
     storage.store_temperature_reading(reading)
     temperature = statistics.mean(storage.get_temperature_readings())
+    temperature = round(temperature, 2)
     storage.set("temperature", temperature)
-
+    
     ws.get_instance().publish("temperature", {
         "latest_reading": temperature
     })

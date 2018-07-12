@@ -16,6 +16,10 @@ window.app.registerModuleWebsocketEndpoint(function(key, data) {
 }, "state");
 
 window.app.registerModuleWebsocketEndpoint(function(key, data) {
+    jQuery("#thermostat-temperature").text(data.value.toFixed(1));
+}, "thermostat_updated");
+
+window.app.registerModuleWebsocketEndpoint(function(key, data) {
     jQuery("#manual-controls-container div.alert").remove();
     if (data.state == "pending" || data.state == "running") {
         var alertClass = (data.state == "pending") ? "warning" : "success";
@@ -109,4 +113,10 @@ jQuery("#btn-cancel-manual-operation").click(function() {
     jQuery.post(
         app.vars.moduleBasePath + "/action/cancel_manual_operation/"
     );
+});
+
+jQuery(".btn-thermostat-adjust").click(function() {
+    var direction = jQuery(this).attr("data-direction");
+    jQuery.post(app.vars.moduleBasePath + 
+        "/action/change_thermostat/" + direction + "/");
 });

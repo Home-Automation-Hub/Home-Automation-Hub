@@ -14,6 +14,9 @@ def set_default_values():
     # temperature
     if not instance.get("num_readings_average"):
         instance.set("num_readings_average", 6)
+
+    if not instance.get("thermostat_temperature"):
+        instance.set("thermostat_temperature", 21)
     
     instance.redis.delete(instance.prefixed_key("temp_readings"))
     instance.redis.delete(instance.prefixed_key("temperature"))
