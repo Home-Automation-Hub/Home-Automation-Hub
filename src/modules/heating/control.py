@@ -37,7 +37,28 @@ def handle_temperature(topic, message):
     temperature = statistics.mean(storage.get_temperature_readings())
     temperature = round(temperature, 2)
     storage.set("temperature", temperature)
+
+    ch_set_on = storage.get("ch_set_on")
     
+    if ch_set_on:
+        # Thermostat logic
+        delta_above = storage.get("thermostat_delta_above")
+        delta_below = storage.get("thermostat_delta_below")
+        set_temp = storage.get("thermostat_temperature")
+        
+        if temperature < (set_temp - delta_below):
+            heating_on()
+        
+        if temperature > (set_temp + delta_above):
+            heating_off()
+
+        ch_running = storage.get("ch_running")
+        if ch_running:
+            # This will send the MQTT "on" signal which must be sent
+            # regularly to prevent the heating turning off due to lack
+            # of communication.
+            heating_on()
+
     ws.get_instance().publish("temperature", {
         "latest_reading": temperature
     })
