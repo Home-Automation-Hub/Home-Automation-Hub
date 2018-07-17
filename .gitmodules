@@ -1,0 +1,3 @@
+[submodule "modules/central_heating"]
+	path = modules/central_heating
+	url = git@github.com:Home-Automation-Hub/Module-Central-Heating.git
