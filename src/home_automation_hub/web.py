@@ -1,10 +1,9 @@
 from flask import Flask, request, render_template, Blueprint, \
         send_from_directory
 
-import config
-import websocket
 import os
 from gevent.pywsgi import WSGIServer
+from . import config, websocket
 
 _app = Flask(__name__)
 path_module_ids = {}

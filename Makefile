@@ -1,7 +1,11 @@
-run:
+build:
+	docker build -t home-automation-hub .
+
+run: build
 	docker-compose up -d
 	docker ps
 
+# TODO: Move Yarn and Pip stuff into dockerfile
 backend-dependencies:
 	cd src; pip
 

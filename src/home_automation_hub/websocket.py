@@ -2,10 +2,9 @@ import websockets
 import asyncio
 import threading
 import aioredis
-import storage
 import uuid
 import json
-import config
+from . import config, storage
 
 socket_queues = {}
 # TODO: Get rid of below global variables and pass them properly

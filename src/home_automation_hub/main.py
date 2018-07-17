@@ -1,8 +1,5 @@
-import mqtt
-from config import config
-import web
-import storage
-import websocket
+from . import mqtt, web, storage, websocket, config as cfg
+config = cfg.config
 
 
 def main():

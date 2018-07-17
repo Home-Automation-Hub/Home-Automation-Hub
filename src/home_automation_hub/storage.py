@@ -1,6 +1,6 @@
 import redis
-import config
 import json
+from . import config
 
 redis_instance = None
 
