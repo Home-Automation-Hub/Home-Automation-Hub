@@ -1,1 +1,0 @@
-from .heating import register

@@ -1,10 +1,10 @@
 from config_store import ConfigStore
-from modules import heating
+import home_automation.heating
 
 config = ConfigStore()
 
-config.register_module(heating, "heating", "Central Heating", "heating",
-        fontawesome_icon_class="thermometer-half")
+config.register_module(home_automation.heating, "heating", "Central Heating",
+        "heating", fontawesome_icon_class="thermometer-half")
 
 config.set_mqtt_broker("localhost", 1883)
 

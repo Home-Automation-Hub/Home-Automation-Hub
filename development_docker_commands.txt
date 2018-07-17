@@ -1,5 +1,0 @@
-The command below may be used to spawn instances of other components required for this system to operate:
-
-MQTT Server: docker run -it -p 1883:1883 eclipse-mosquitto
-Redis Server: docker run --name redis --rm -it -p 6379:6379 redis
-Redis CLI: docker run -it --link redis:redis --rm redis redis-cli -h redis -p 6379
