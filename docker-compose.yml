@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   mqtt:
     image: "eclipse-mosquitto"
@@ -9,9 +10,12 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ./redis_persist:/data
+      - redis-data:/data
   hub:
     image: "home-automation-hub"
     ports:
       - "5000:5000"
       - "5001:5001"
+
+volumes:
+  redis-data:
