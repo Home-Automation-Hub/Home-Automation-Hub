@@ -1,4 +1,6 @@
 from . import mqtt, web, storage, websocket, config as cfg
+import signal
+import os
 config = cfg.config
 
 
@@ -20,6 +22,10 @@ def register_modules():
         })
     web.register_all_endpoints()
 
+# TODO: Figure out why this isn't working!
+# def sigterm_handler(_signo, _stack_frame):
+#     os._exit(0)
 
 if __name__ == "__main__":
+    # signal.signal(signal.SIGTERM, sigterm_handler)
     main()

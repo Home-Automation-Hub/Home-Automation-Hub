@@ -2,8 +2,8 @@ build:
 	docker build -t home-automation-hub .
 
 run: build
-	docker-compose up -d
+	docker-compose up -d --timeout=1
 	docker ps
 
 stop:
-	docker-compose down
+	docker-compose down --timeout=1
