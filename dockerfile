@@ -33,4 +33,8 @@ RUN pip install -e /install/hub
 COPY modules /install/modules
 RUN pip install -e /install/modules/*
 
+# PYTHONUNBUFFERED ensures that log lines from the application are
+# output immediately when using docker logs or docker attach rather than
+# being "batched" and displayed very infrequently
+ENV PYTHONUNBUFFERED=0
 CMD ["home-automation-hub"]
