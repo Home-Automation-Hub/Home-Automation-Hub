@@ -17,9 +17,12 @@
 </head>
 <body class="app sidebar-md-show sidebar-fixed">
     <nav class="navbar navbar-light bg-light">
+        <button class="navbar-toggler sidebar-toggler d-md-none" type="button" data-toggle="sidebar-show">
+            <span class="navbar-toggler-icon"></span>
+        </button>
         <a href="#" class="navbar-brand">Smart Home Hub</a>
     </nav>
-    <div class="app-body">
+    <div class="app-body mt-2">
         <div class="sidebar">
             <nav class="sidebar-nav">
                 <ul class="nav">
@@ -38,7 +41,7 @@
             </nav>
             <button class="sidebar-minimizer brand-minimizer" type="button"></button>
         </div>
-        <main class="main">
+        <main class="main mt-2">
             <div class="container-fluid">
                 {% block content %}{% endblock %}
             </div>

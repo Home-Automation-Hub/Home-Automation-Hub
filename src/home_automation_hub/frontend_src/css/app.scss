@@ -1,1 +1,6 @@
 @import "~@coreui/coreui/scss/coreui";
+
+.app-body {
+    // Prevents margin being added when on mobile devices
+    margin-top: 0px !important;
+}
