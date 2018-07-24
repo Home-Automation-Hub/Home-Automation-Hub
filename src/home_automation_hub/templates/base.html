@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <script type="text/javascript">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script type="text/javascript">
         window.app = {};
         window.app.vars = {
             moduleId: "{{ module_id }}",
@@ -10,44 +10,44 @@
             wsAuthToken: "{{ ws_auth }}",
             wsEndpoint: "ws://" + window.location.hostname + ":5001" // TODO: Improve this!
         };
-    </script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='bundle.css') }}">
-    {% block module_head %}{% endblock %}
-    <title>Smart Home Hub</title>
-</head>
-<body class="app sidebar-md-show sidebar-fixed">
-    <nav class="navbar navbar-light bg-light">
-        <button class="navbar-toggler sidebar-toggler d-md-none" type="button" data-toggle="sidebar-show">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <a href="#" class="navbar-brand">Smart Home Hub</a>
-    </nav>
-    <div class="app-body mt-2">
-        <div class="sidebar">
-            <nav class="sidebar-nav">
-                <ul class="nav">
-                    <a href="/", class="nav-link">
-                        <i class="nav-icon fas fa-tachometer-alt"></i>
-                        Dashboard
-                    </a>
-                    <li class="nav-title">Modules</li>
-                    {% for module in enabled_modules %}
-                        <a href="/modules/{{ module.url_prefix }}/" class="nav-link{% if module_base_path=='/modules/'+module.url_prefix %} active{% endif %}">
-                            <i class="nav-icon fas fa-{{ module.fontawesome_icon_class }}"></i>
-                            {{ module.title }}
+        </script>
+        <script src="{{ url_for('static', filename='bundle.js') }}"></script>
+        <link rel="stylesheet" href="{{ url_for('static', filename='bundle.css') }}">
+        {% block module_head %}{% endblock %}
+        <title>Smart Home Hub</title>
+    </head>
+    <body class="app sidebar-md-show sidebar-fixed">
+        <nav class="navbar navbar-light bg-light">
+            <button class="navbar-toggler sidebar-toggler d-md-none" type="button" data-toggle="sidebar-show">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a href="#" class="navbar-brand">Smart Home Hub</a>
+        </nav>
+        <div class="app-body mt-2">
+            <div class="sidebar">
+                <nav class="sidebar-nav">
+                    <ul class="nav">
+                        <a href="/", class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt"></i>
+                            Dashboard
                         </a>
-                    {% endfor %}
-                </ul>
-            </nav>
-            <button class="sidebar-minimizer brand-minimizer" type="button"></button>
-        </div>
-        <main class="main mt-2">
-            <div class="container-fluid">
-                {% block content %}{% endblock %}
+                        <li class="nav-title">Modules</li>
+                        {% for module in enabled_modules %}
+                            <a href="/modules/{{ module.url_prefix }}/" class="nav-link{% if module_base_path=='/modules/'+module.url_prefix %} active{% endif %}">
+                                <i class="nav-icon fas fa-{{ module.fontawesome_icon_class }}"></i>
+                                {{ module.title }}
+                            </a>
+                        {% endfor %}
+                    </ul>
+                </nav>
+                <button class="sidebar-minimizer brand-minimizer" type="button"></button>
             </div>
-        </main>
-    </div>
-    <script src="{{ url_for('static', filename='bundle.js') }}"></script>
-    {% block module_scripts %}{% endblock %}
-</body>
+            <main class="main mt-2">
+                <div class="container-fluid">
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+        {% block module_scripts %}{% endblock %}
+    </body>
 </html>

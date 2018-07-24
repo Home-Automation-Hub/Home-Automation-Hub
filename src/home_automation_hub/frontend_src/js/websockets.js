@@ -32,18 +32,21 @@ import $ from "jquery"
         }
     }
 
-    function registerModuleWebsocketEndpoint(callback, key) {
+    function registerModuleWebsocketEndpoint(callback, key, moduleId) {
         if (typeof key == "undefined") {
             key = "";
         }
-        if (typeof moduleEndpoints[app.vars.moduleId] == "undefined") {
-            moduleEndpoints[app.vars.moduleId] = {};
+        if (typeof moduleId == "undefined") {
+            moduleId = app.vars.moduleId;
         }
-        if (typeof moduleEndpoints[app.vars.moduleId][key] == "undefined") {
-            moduleEndpoints[app.vars.moduleId][key] = [];
+        if (typeof moduleEndpoints[moduleId] == "undefined") {
+            moduleEndpoints[moduleId] = {};
+        }
+        if (typeof moduleEndpoints[moduleId][key] == "undefined") {
+            moduleEndpoints[moduleId][key] = [];
         }
 
-        moduleEndpoints[app.vars.moduleId][key].push(callback);
+        moduleEndpoints[moduleId][key].push(callback);
     }
 
     window.app.registerModuleWebsocketEndpoint = registerModuleWebsocketEndpoint;

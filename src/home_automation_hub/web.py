@@ -10,6 +10,7 @@ path_module_ids = {}
 module_base_paths = {}
 endpoints_to_register = []
 enabled_modules = []
+dashboard_widgets = []
 
 @_app.context_processor
 def inject_websocket_auth():
@@ -34,7 +35,16 @@ def inject_enabled_modules():
 
 @_app.route("/")
 def index():
-    return render_template("dashboard.html")
+    widgets = []
+    for widget in dashboard_widgets:
+        widgets.append({
+            "html": widget["function"](widget["module_base_path"],
+                    widget["module_id"]),
+            "width": widget["width"],
+            "title": widget["title"],
+        })
+
+    return render_template("dashboard.html", widgets=widgets)
 
 
 # TODO: Store the endpoints that should be registered somewhere then create
@@ -51,6 +61,21 @@ def add_endpoint(module_id, path, view_func, methods=None):
         "methods": methods
     })
 
+def add_dashboard_widget(module_id, title, function, width=3):
+    if width > 12:
+        raise ValueError("Width must not be greater than 12")
+
+    module_attributes = config.config.enabled_modules[module_id]
+    module_base_path = "/" + "/".join([x.strip("/") for x in ["modules",
+            module_attributes["url_prefix"]]])
+
+    dashboard_widgets.append({
+        "module_id": module_id,
+        "title": title,
+        "function": function,
+        "width": width,
+        "module_base_path": module_base_path,
+    })
 
 def register_all_endpoints():
     registered_module_ids = []
