@@ -21,4 +21,5 @@ setup(
             ["home-automation-hub=home_automation_hub.main:main"]
         ]
     },
+    include_package_data=True,
 )

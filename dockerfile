@@ -24,14 +24,18 @@ COPY src/home_automation_hub/frontend_src /install/hub/home_automation_hub/front
 COPY src/home_automation_hub/webpack.conf.js /install/hub/home_automation_hub/webpack.conf.js
 RUN cd /install/hub/home_automation_hub && yarn run build:dev
 
+# Remove node_modules as this is no longer required now that we have
+# built the frontend and leaving it in places causes issues with pip
+RUN rm -rf /install/hub/home_automation_hub/node_modules
+
 # Now copy in the rest of the system and run pip install again, this
 # will not reinstall all Python dependencies as they have been don
 # above
 COPY src /install/hub
-RUN pip install -e /install/hub
+RUN pip install /install/hub
 
 COPY modules /install/modules
-RUN pip install -e /install/modules/*
+RUN pip install /install/modules/*
 
 # PYTHONUNBUFFERED ensures that log lines from the application are
 # output immediately when using docker logs or docker attach rather than

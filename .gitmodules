@@ -1,3 +1,6 @@
 [submodule "modules/central_heating"]
 	path = modules/central_heating
 	url = git@github.com:Home-Automation-Hub/Module-Central-Heating.git
+[submodule "modules/influxdb_logger"]
+	path = modules/influxdb_logger
+	url = git@github.com:Home-Automation-Hub/Module-InfluxDB-Logger.git

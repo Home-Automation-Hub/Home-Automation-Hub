@@ -11,6 +11,7 @@ module_base_paths = {}
 endpoints_to_register = []
 enabled_modules = []
 dashboard_widgets = []
+module_staticdir_lookup = {}
 
 @_app.context_processor
 def inject_websocket_auth():
@@ -98,15 +99,17 @@ def register_all_endpoints():
             blueprint = Blueprint(endpoint["module_id"],
                     module_attributes["module"].__name__,
                     template_folder="templates")
-            
+                        
             # Register an endpoint for serving static files from the
             # module's static directory
-            @blueprint.route(f"{path_prefix}/static/<path:path>")
-            def static_endpoint(path):
-                static_dir = os.path.join(
+            module_staticdir_lookup[f"{path_prefix}/static/"] = os.path.join(
                         os.path.dirname(module_attributes["module"].__file__),
                         "static"
-                )
+                    )
+            @blueprint.route(f"{path_prefix}/static/<path:path>")
+            def static_endpoint(path):
+                static_dir = module_staticdir_lookup[request.path.replace(
+                        path, "")]
                 return send_from_directory(static_dir, path)
         
         # The path to an endpoint is the word modules followed by the

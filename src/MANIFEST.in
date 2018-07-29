@@ -1,0 +1,2 @@
+recursive-include home_automation_hub/templates *
+recursive-include home_automation_hub/static *
