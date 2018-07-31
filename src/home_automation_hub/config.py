@@ -3,12 +3,11 @@ import home_automation_heating
 import home_automation_influxdb_logger
 
 config = ConfigStore()
-
+config.register_module(home_automation_heating, "heating", "Central Heating",
+        "heating", fontawesome_icon_class="thermometer-half")
 config.register_module(home_automation_influxdb_logger, "influxdb_logger",
         "InfluxDB Logger", "influxdb_logger",
         fontawesome_icon_class="database")
-config.register_module(home_automation_heating, "heating", "Central Heating",
-        "heating", fontawesome_icon_class="thermometer-half")
 
 config.set_mqtt_broker("mqtt", 1883)
 
