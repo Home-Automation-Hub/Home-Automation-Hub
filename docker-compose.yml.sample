@@ -19,6 +19,12 @@ services:
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
+  proxy:
+    image: "nginx:alpine"
+    ports:
+      - "8080:80"
+    volumes:
+      - "./system/nginx.conf:/etc/nginx/nginx.conf"
 
 volumes:
   redis-data:
