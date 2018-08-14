@@ -7,15 +7,10 @@ services:
       - "1883:1883"
   redis:
     image: "redis"
-    ports:
-      - "6379:6379"
     volumes:
       - redis-data:/data
   hub:
     image: "home-automation-hub"
-    ports:
-      - "5000:5000"
-      - "5001:5001"
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
