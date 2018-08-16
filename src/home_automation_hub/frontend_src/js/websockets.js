@@ -3,7 +3,9 @@ import $ from "jquery"
 (function() {
     var moduleEndpoints = {};
 
-    var socket = new WebSocket(app.vars.wsEndpoint);
+    wsProtocol = window.location.protocol.replace("http", "ws");
+
+    var socket = new WebSocket(wsProtocol + "//" + app.vars.wsEndpoint);
 
     socket.onmessage = function(message) {
         if (message.data == "ok") {

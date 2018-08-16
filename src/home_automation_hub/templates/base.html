@@ -8,7 +8,7 @@
             moduleId: "{{ module_id }}",
             moduleBasePath: "{{ module_base_path }}",
             wsAuthToken: "{{ ws_auth }}",
-            wsEndpoint: "ws://" + window.location.host + "/websocket/"
+            wsEndpoint: window.location.host + "/websocket/"
         };
         </script>
         <script src="{{ url_for('static', filename='bundle.js') }}"></script>
