@@ -3,7 +3,7 @@ import $ from "jquery"
 (function() {
     var moduleEndpoints = {};
 
-    wsProtocol = window.location.protocol.replace("http", "ws");
+    var wsProtocol = window.location.protocol.replace("http", "ws");
 
     var socket = new WebSocket(wsProtocol + "//" + app.vars.wsEndpoint);
 
