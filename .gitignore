@@ -5,5 +5,7 @@ venv
 src/home_automation_hub/yarn.lock
 src/home_automation_hub/node_modules
 src/home_automation_hub/static
+modules/*
+!modules/.keep
 redis_persist
 docker-compose.yml
